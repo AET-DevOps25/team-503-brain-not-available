@@ -19,7 +19,7 @@ Employees, Developers, Engineers, Managers who want to share and organize their 
 
 ## Describe some scenarios how your app will function?
 
-- Employees create a wiki documentation for their work project
-- Writers can use AI to improve the quality of articles and create content more efficiently
-- They can ask questions and get AI generated answers based on the content of the wiki entries
-- Users can search to find relevant wiki pages
+- As a user, I want to write wiki articles to document my work project
+- As a user, I want to get AI generated writing suggestions to improve the quality of articles and create content more efficiently
+- As a user, I want that questions that I ask are answered based on the content of the wiki using AI. This helps me to quickly extract information out of the wiki without having to read several articles
+- As a user, I want to have a search functionality in order to find relevant wiki pages quickly
