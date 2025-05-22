@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  gpt4all:
+    build:
+      context: ./gpt4all
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - genai-network
+
+  weaviate:
+    build:
+      context: ./weaviate
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    networks:
+      - genai-network
+
+networks:
+  genai-network:
+    driver: bridge
