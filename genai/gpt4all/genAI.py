@@ -1,17 +1,20 @@
 from gpt4all import GPT4All
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, Request
+from pydantic import BaseModel
+from fastapi.responses import JSONResponse
+import uvicorn
 
-app = Flask(__name__)
+app = FastAPI()
 model = GPT4All("Meta-Llama-3-8B-Instruct.Q4_0.gguf")  # downloads / loads a 4.66GB LLM
 
-@app.route("/chat", methods=["POST"])
-def chat():
-    data = request.get_json()
-    prompt = data.get("prompt", "")
+class ChatRequest(BaseModel):
+    prompt: str
+
+@app.post("/chat")
+async def chat(request: ChatRequest):
     with model.chat_session():
-        response = model.generate(prompt, max_tokens=1024)
-    return jsonify({"response": response})
+        response = model.generate(request.prompt, max_tokens=1024)
+    return JSONResponse(content={"response": response})
 
 if __name__ == "__main__":
-    # Start REST API
-    app.run(host="0.0.0.0", port=5000)
+    uvicorn.run("genAI:app", host="0.0.0.0", port=5000, reload=True)
