@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 volumes:
   mariadb_data:
@@ -32,6 +32,27 @@ services:
       - /proc/meminfo:/proc/meminfo:ro
       - /proc/stat:/proc/stat:ro
 
+  gpt4all:
+    build:
+      context: ./genai/gpt4all
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - genai-network
+
+  weaviate:
+    build:
+      context: ./genai/weaviate
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    networks:
+      - genai-network
+
 networks:
   app_network:
+    driver: bridge
+  genai-network:
     driver: bridge
