@@ -1,0 +1,18 @@
+meta {
+  name: Create page
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:1111/page
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Test Page Title",
+    "content": "Content of the test page"
+  }
+}
