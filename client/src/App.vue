@@ -21,7 +21,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
         <AppSidebar />
         <main>
             <SidebarTrigger />
-            <slot />
+            <RouterView />
         </main>
     </SidebarProvider>
 </template>
