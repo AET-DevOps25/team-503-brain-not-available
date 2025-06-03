@@ -1,5 +1,5 @@
 from gpt4all import GPT4All
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, requests
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 import uvicorn
@@ -55,4 +55,5 @@ async def chat(request: ChatRequest):
     return JSONResponse(content={"response": response})
 
 if __name__ == "__main__":
+    update_weaviate()  # Initial update of Weaviate with wiki pages
     uvicorn.run("genAI:app", host="0.0.0.0", port=5000, reload=True)
