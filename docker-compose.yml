@@ -1,10 +1,11 @@
 volumes:
   mariadb_data:
+  grafana-storage:
 
 services:
   database:
     image: mariadb:10.7
-    container_name: "mariadb"
+    container_name: "database"
     restart: always
     volumes:
       - mariadb_data:/var/lib/mysql
@@ -33,15 +34,17 @@ services:
       - /proc/stat:/proc/stat:ro
 
   gpt4all:
+    container_name: "gpt4all"
     build:
       context: ./genai/gpt4all
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
     networks:
-      - genai-network
+      - app_network
 
   weaviate:
+    container_name: "weaviate"
     build:
       context: ./genai/weaviate
       dockerfile: Dockerfile
@@ -49,10 +52,73 @@ services:
       - "8080:8080"
       - "50051:50051"
     networks:
-      - genai-network
+      - app_network
+
+  prometheus:
+    container_name: "prometheus"
+    build:
+      context: ./monitoring/prometheus
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    networks:
+      - app_network
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    container_name: "grafana"
+    build:
+      context: ./monitoring/grafana
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_AUTH_ANONYMOUS_ORG_ID=1
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    volumes:
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8081:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - app_network
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    networks:
+      - app_network
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
 
 networks:
   app_network:
-    driver: bridge
-  genai-network:
     driver: bridge
