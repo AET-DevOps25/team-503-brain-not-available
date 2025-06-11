@@ -64,6 +64,14 @@ async function deletePage(pageId: number) {
         pages.value = pages.value.filter((p: any) => p.pageId !== pageId)
     }
 }
+
+async function createPage() {
+    const title = prompt("Titel der neuen Seite:")
+    if (title && title.trim().length > 0) {
+        const newPage = await pageService.createPage({ title, content: "" })
+        pages.value.push(newPage)
+    }
+}
 </script>
 
 <template>
@@ -86,7 +94,16 @@ async function deletePage(pageId: number) {
                 </SidebarGroupContent>
             </SidebarGroup>
             <SidebarGroup>
-                <SidebarGroupLabel>Seiten</SidebarGroupLabel>
+                <div class="flex items-center justify-between px-4 py-2">
+                    <SidebarGroupLabel>Seiten</SidebarGroupLabel>
+                    <button
+                        @click="createPage"
+                        class="ml-2 p-1 rounded hover:bg-gray-100 text-blue-600 text-base h-7 w-7 flex items-center justify-center"
+                        title="Neue Seite erstellen"
+                    >
+                        <span class="leading-none">+</span>
+                    </button>
+                </div>
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem v-for="page in pages" :key="page.id" class="flex items-center justify-between">
@@ -96,7 +113,6 @@ async function deletePage(pageId: number) {
                                     <span class="truncate">{{ page.title }}</span>
                                 </router-link>
                             </SidebarMenuButton>
-
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <button class="ml-2 rounded hover:bg-gray-100 h-7 w-13 flex items-center justify-center">
@@ -109,7 +125,6 @@ async function deletePage(pageId: number) {
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                            
                         </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarGroupContent>
