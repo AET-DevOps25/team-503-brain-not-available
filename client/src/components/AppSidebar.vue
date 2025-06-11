@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
     Sidebar,
+    SidebarHeader,
     SidebarContent,
     SidebarGroup,
     SidebarGroupContent,
@@ -18,9 +19,9 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
 
-import { Calendar, Home, Inbox, Search, Settings, FileText } from "lucide-vue-next"
+import { Calendar, Home, Inbox, Search, Settings, FileText, User2, ChevronUp, Ellipsis } from "lucide-vue-next"
 import { ref, onMounted } from "vue"
-import { pageService } from "@/service/pageService" // Passe den Pfad ggf. an
+import { pageService } from "@/service/pageService"
 
 const items = [
     {
@@ -54,8 +55,15 @@ const items = [
 const pages = ref([])
 
 onMounted(async () => {
-    pages.value = await pageService.getAllPages() // getPages() muss ein Array von Seiten liefern
+    pages.value = await pageService.getAllPages()
 })
+
+async function deletePage(pageId: number) {
+    if (confirm("Willst du diese Seite wirklich löschen?")) {
+        await pageService.deletePage(pageId)
+        pages.value = pages.value.filter((p: any) => p.pageId !== pageId)
+    }
+}
 </script>
 
 <template>
@@ -81,42 +89,56 @@ onMounted(async () => {
                 <SidebarGroupLabel>Seiten</SidebarGroupLabel>
                 <SidebarGroupContent>
                     <SidebarMenu>
-                        <SidebarMenuItem v-for="page in pages" :key="page.id">
-                            <SidebarMenuButton asChild>
-                                <router-link :to="`/pages/${page.pageId}`">
+                        <SidebarMenuItem v-for="page in pages" :key="page.id" class="flex items-center justify-between">
+                            <SidebarMenuButton asChild class="flex-1 min-w-0">
+                                <router-link :to="`/pages/${page.pageId}`" class="flex items-center min-w-0">
                                     <FileText style="margin-right: 8px;" />
-                                    <span>{{ page.title }}</span>
+                                    <span class="truncate">{{ page.title }}</span>
                                 </router-link>
                             </SidebarMenuButton>
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <button class="ml-2 rounded hover:bg-gray-100 h-7 w-13 flex items-center justify-center">
+                                        <Ellipsis />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent side="right">
+                                    <DropdownMenuItem @click="deletePage(page.pageId)">
+                                        <span class="text-red-600">Löschen</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                            
                         </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <User2 /> Username
-                  <ChevronUp class="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                class="w-[--reka-popper-anchor-width]"
-              >
-                <DropdownMenuItem>
-                  <span>Account</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Sign out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <SidebarMenuButton>
+                                <User2 /> Username
+                                <ChevronUp class="ml-auto" />
+                            </SidebarMenuButton>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            side="top"
+                            class="w-[--reka-popper-anchor-width]"
+                        >
+                            <DropdownMenuItem>
+                                <span>Account</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <span>Sign out</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </SidebarMenuItem>
+            </SidebarMenu>
+        </SidebarFooter>
     </Sidebar>
 </template>
