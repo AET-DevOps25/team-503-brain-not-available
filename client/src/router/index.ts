@@ -7,6 +7,7 @@ const routes = [
     { path: '/', name: 'Dashboard', component: PageView },
     { path: '/settings', name: 'Settings', component: PageView },
     { path: '/profile', name: 'Profile', component: PageView },
+    { path: '/pages/:id', name: 'PageView', component: PageView },
 ]
 
 const router = createRouter({
