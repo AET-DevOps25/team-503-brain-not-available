@@ -10,7 +10,9 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-vue-next"
+import { Calendar, Home, Inbox, Search, Settings, FileText } from "lucide-vue-next"
+import { ref, onMounted } from "vue"
+import { pageService } from "@/service/pageService" // Passe den Pfad ggf. an
 
 const items = [
     {
@@ -40,7 +42,12 @@ const items = [
     },
 ];
 
+// Seiten aus dem Page-Service laden
+const pages = ref([])
 
+onMounted(async () => {
+    pages.value = await pageService.getAllPages() // getPages() muss ein Array von Seiten liefern
+})
 </script>
 
 <template>
@@ -62,8 +69,21 @@ const items = [
                     </SidebarMenu>
                 </SidebarGroupContent>
             </SidebarGroup>
-            <SidebarGroup />
-            <SidebarGroup />
+            <SidebarGroup>
+                <SidebarGroupLabel>Seiten</SidebarGroupLabel>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem v-for="page in pages" :key="page.id">
+                            <SidebarMenuButton asChild>
+                                <router-link :to="`/pages/${page.pageId}`">
+                                    <FileText style="margin-right: 8px;" />
+                                    <span>{{ page.title }}</span>
+                                </router-link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
         </SidebarContent>
         <SidebarFooter />
     </Sidebar>
