@@ -1,16 +1,11 @@
 package com.wiki.backend;
 
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +21,7 @@ public class BackendApplication {
         SpringApplication.run(BackendApplication.class, args);
     }
 
+    @CrossOrigin
     @GetMapping("/page/{pageId}")
     public ResponseEntity<Page> getPage(@PathVariable int pageId) {
         Optional<Page> page = pageRepository.findById(pageId);
@@ -33,16 +29,19 @@ public class BackendApplication {
                    .orElse(ResponseEntity.notFound().build());
     }
 
+    @CrossOrigin
     @GetMapping("/pages")
     public List<Page> getAllPages() {
         return pageRepository.findAll();
     }
 
+    @CrossOrigin
     @PostMapping("/page")
     public Page createPage(@RequestBody Page page) {
         return pageRepository.save(page);
     }
 
+    @CrossOrigin
     @PutMapping("/page/{pageId}")
     public ResponseEntity<Page> updatePage(@PathVariable int pageId, @RequestBody Page pageDetails) {
         return pageRepository.findById(pageId)
@@ -54,6 +53,7 @@ public class BackendApplication {
             .orElse(ResponseEntity.notFound().build());
     }
 
+    @CrossOrigin
     @DeleteMapping("/page/{pageId}")
     public ResponseEntity<Page> deletePage(@PathVariable int pageId) {
         return pageRepository.findById(pageId)
