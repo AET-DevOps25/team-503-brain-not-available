@@ -1,7 +1,27 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import AppSidebar from '@/components/AppSidebar.vue'
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+  import AppSidebar from '@/components/AppSidebar.vue'
+  import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+  import { ref, onMounted } from 'vue';
+
+  const title = ref('ExampleTitle');
+  const pages = ref([]);
+
+  onMounted(async () => {
+    try {
+      const response =
+        await fetch('http://localhost:1111/pages', {
+          method: 'GET',
+          headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const responseJson = await response.json();
+      pages.value = responseJson;
+      console.log(pages.value)
+    } catch(error) {
+      console.error('Error fetching pages from API', error);
+    }
+  });
 </script>
 
 <!--<template>
@@ -22,6 +42,8 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
         <main>
             <SidebarTrigger />
             <RouterView />
+            <h2>Page: {{ title }}</h2>
+            <p>{{ pages }}</p>
         </main>
     </SidebarProvider>
 </template>
