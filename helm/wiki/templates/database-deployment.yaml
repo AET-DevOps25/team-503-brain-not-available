@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wiki.fullname" . }}-database
+  labels:
+    app: {{ include "wiki.name" . }}
+    component: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "wiki.name" . }}
+      component: database
+  template:
+    metadata:
+      labels:
+        app: {{ include "wiki.name" . }}
+        component: database
+    spec:
+      containers:
+        - name: database
+          image: mariadb:10.7
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ .Values.database.rootPassword }}
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mariadb-data
+          persistentVolumeClaim:
+            claimName: {{ include "wiki.fullname" . }}-mariadb-data
+      restartPolicy: Always
