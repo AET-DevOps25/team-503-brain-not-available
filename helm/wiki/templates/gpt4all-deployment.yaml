@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpt4all
+  labels:
+    app: gpt4all
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gpt4all
+  template:
+    metadata:
+      labels:
+        app: gpt4all
+    spec:
+      containers:
+        - name: gpt4all
+          image: {{ .Values.gpt4all.image.repository }}:{{ .Values.gpt4all.image.tag }}
+          ports:
+            - containerPort: 5000

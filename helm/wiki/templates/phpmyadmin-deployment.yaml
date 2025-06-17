@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wiki.fullname" . }}-phpmyadmin
+  labels:
+    app: {{ include "wiki.name" . }}
+    component: phpmyadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "wiki.name" . }}
+      component: phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: {{ include "wiki.name" . }}
+        component: phpmyadmin
+    spec:
+      containers:
+        - name: phpmyadmin
+          image: phpmyadmin/phpmyadmin:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: PMA_HOST
+              value: {{ .Values.phpmyadmin.host }}
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ .Values.database.rootPassword }}
+            - name: UPLOAD_LIMIT
+              value: {{ .Values.phpmyadmin.uploadLimit }}
+          volumeMounts:
+            - name: proc-meminfo
+              mountPath: /proc/meminfo
+              subPath: meminfo
+              readOnly: true
+            - name: proc-stat
+              mountPath: /proc/stat
+              subPath: stat
+              readOnly: true
+      volumes:
+        - name: proc-meminfo
+          hostPath:
+            path: /proc/meminfo
+        - name: proc-stat
+          hostPath:
+            path: /proc/stat
