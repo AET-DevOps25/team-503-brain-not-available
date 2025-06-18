@@ -25,7 +25,6 @@ spec:
               readOnly: true
             - name: varrun
               mountPath: /var/run
-              readOnly: true
             - name: sys
               mountPath: /sys
               readOnly: true
