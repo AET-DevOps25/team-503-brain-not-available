@@ -29,11 +29,9 @@ services:
       - app_network
     depends_on:
       - database
-    volumes:
-      - /proc/meminfo:/proc/meminfo:ro
-      - /proc/stat:/proc/stat:ro
 
   gpt4all:
+    image: ghcr.io/team-503-brain-not-available/gpt4all:latest
     container_name: "gpt4all"
     build:
       context: ./genai/gpt4all
@@ -44,6 +42,7 @@ services:
       - app_network
 
   weaviate:
+    image: ghcr.io/team-503-brain-not-available/weaviate:latest
     container_name: "weaviate"
     build:
       context: ./genai/weaviate
@@ -55,6 +54,7 @@ services:
       - app_network
 
   prometheus:
+    image: ghcr.io/team-503-brain-not-available/prometheus:latest
     container_name: "prometheus"
     build:
       context: ./monitoring/prometheus
@@ -67,6 +67,7 @@ services:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
   grafana:
+    image: ghcr.io/team-503-brain-not-available/grafana:latest
     container_name: "grafana"
     build:
       context: ./monitoring/grafana

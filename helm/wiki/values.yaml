@@ -27,22 +27,22 @@ phpmyadmin:
 
 gpt4all:
   image:
-    repository: gpt4all
+    repository: ghcr.io/team-503-brain-not-available/gpt4all
     tag: latest
 
 weaviate:
   image:
-    repository: weaviate
+    repository: ghcr.io/team-503-brain-not-available/weaviate
     tag: latest
 
 prometheus:
   image:
-    repository: prometheus
+    repository: ghcr.io/team-503-brain-not-available/prometheus
     tag: latest
 
 grafana:
   image:
-    repository: grafana
+    repository: ghcr.io/team-503-brain-not-available/grafana
     tag: latest
   adminPassword: admin
   allowSignUp: false
