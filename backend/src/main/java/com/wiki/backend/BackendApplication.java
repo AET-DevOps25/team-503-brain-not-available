@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @SpringBootApplication
 @RestController
@@ -69,32 +70,37 @@ public class BackendApplication {
             .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/user/{email}")
-    public ResponseEntity<User> getUser(@PathVariable String email) {
-        Optional<User> user = userRepository.findById(email);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<User> getUser(@PathVariable UUID userId) {
+        Optional<User> user = userRepository.findById(userId);
         return user.map(ResponseEntity::ok)
                    .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/user")
     public User createUser(@RequestBody User user) {
+        // Ensure the user has a UUID set
+        if (user.getId() == null) {
+            user.setId(UUID.randomUUID());
+        }
         return userRepository.save(user);
     }
 
-    @PutMapping("/user/{email}")
-    public ResponseEntity<User> updateUser(@PathVariable String email, @RequestBody User userDetails) {
-        return userRepository.findById(email)
+    @PutMapping("/user/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable UUID userId, @RequestBody User userDetails) {
+        return userRepository.findById(userId)
             .map(user -> {
                 user.setName(userDetails.getName());
                 user.setPasswordHash(userDetails.getPasswordHash());
+                user.setEmail(userDetails.getEmail());
                 return ResponseEntity.ok(userRepository.save(user));
             })
             .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/user/{email}")
-    public ResponseEntity<User> deleteUser(@PathVariable String email) {
-        return userRepository.findById(email)
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<User> deleteUser(@PathVariable UUID userId) {
+        return userRepository.findById(userId)
             .map(user -> {
                 userRepository.delete(user);
                 return ResponseEntity.ok(user);
@@ -104,11 +110,10 @@ public class BackendApplication {
 
     @PostMapping("/authenticateUser")
     public boolean authenticateUser(@RequestParam String email, @RequestParam String password) {
-        Optional<User> userOpt = userRepository.findById(email);
+        Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             String storedHash = user.getPasswordHash();
-            // Compare the provided password with the stored hash
             return BCrypt.checkpw(password, storedHash);
         }
         return false;
