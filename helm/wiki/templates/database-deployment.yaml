@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: database
-          image: mariadb:10.7
+          image: {{ .Values.gpt4all.database.repository }}:{{ .Values.database.image.tag }}
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: {{ .Values.database.rootPassword }}

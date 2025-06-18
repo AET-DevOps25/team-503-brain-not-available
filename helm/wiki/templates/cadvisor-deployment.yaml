@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: cadvisor
-          image: gcr.io/cadvisor/cadvisor:latest
+          image: {{ .Values.cadvisor.image.repository }}:{{ .Values.cadvisor.image.tag }}
           ports:
             - containerPort: 8080
           volumeMounts:
