@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "wiki.fullname" . }}-cadvisor
+  labels:
+    app: {{ include "wiki.name" . }}
+    chart: {{ include "wiki.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ include "wiki.name" . }}
+    component: cadvisor

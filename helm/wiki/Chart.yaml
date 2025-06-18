@@ -1,0 +1,9 @@
+name: wiki
+version: 0.1.0
+description: A Helm chart for deploying a suite of services including MariaDB, phpMyAdmin, Grafana, Prometheus, cAdvisor, Node Exporter, gpt4all, and Weaviate.
+keywords:
+  - helm
+  - kubernetes
+  - monitoring
+  - database
+  - ai

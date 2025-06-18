@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "wiki.fullname" . }}-weaviate
+  labels:
+    app: {{ include "wiki.name" . }}-weaviate
+spec:
+  replicas: {{ .Values.weaviate.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "wiki.name" . }}-weaviate
+  template:
+    metadata:
+      labels:
+        app: {{ include "wiki.name" . }}-weaviate
+    spec:
+      containers:
+        - name: weaviate
+          image: {{ .Values.weaviate.image.repository }}:{{ .Values.weaviate.image.tag }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: WEAVIATE_HOST
+              value: "0.0.0.0"
+            - name: WEAVIATE_PORT
+              value: "8080"
+            - name: WEAVIATE_AUTHENTICATION
+              value: "false"
+          resources:
+            {{- toYaml .Values.weaviate.resources | nindent 12 }}

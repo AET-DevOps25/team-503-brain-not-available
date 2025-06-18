@@ -1,0 +1,71 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "{{ .Release.Name }}-ingress"
+  {{- $annotations := .Values.ingress.annotations | default dict }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.tls }}
+  tls:
+    - hosts:
+        - "{{ .Values.ingress.host }}"
+      secretName: "{{ .Release.Name }}-tls"
+  {{- end }}
+  rules:
+    - host: "{{ .Values.ingress.host }}"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-service
+                port:
+                  number: 80
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-grafana-service
+                port:
+                  number: 3000
+          - path: /phpmyadmin
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-phpmyadmin-service
+                port:
+                  number: 80
+          - path: /prometheus
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-prometheus-service
+                port:
+                  number: 9090
+          - path: /weaviate
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-weaviate-service
+                port:
+                  number: 8080
+          - path: /gpt4all
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-gpt4all-service
+                port:
+                  number: 5000
+          - path: /cadvisor
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-cadvisor-service
+                port:
+                  number: 8080
+{{- end }}
