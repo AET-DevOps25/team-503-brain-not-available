@@ -5,6 +5,7 @@ on:
     #workflows: ["Build and Publish Docker Images"]
     #types:
     #  - completed
+  push:
     branches:
       - main
       - 47-workflow-bugfix
