@@ -34,6 +34,8 @@ jobs:
         uses: azure/setup-helm@v4
 
       - name: Deploy Helm Chart
+        env:
+          KUBECONFIG: ${{ github.workspace }}/kubeconfig
         run: |
           helm upgrade --install wiki ./helm/wiki --namespace wiki --create-namespace
 
