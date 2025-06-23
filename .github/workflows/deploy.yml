@@ -40,5 +40,7 @@ jobs:
           helm upgrade --install wiki ./helm/wiki --namespace wiki --create-namespace
 
       - name: Verify Deployment
+        env:
+            KUBECONFIG: ${{ github.workspace }}/kubeconfig
         run: |
           kubectl get pods -n wiki
