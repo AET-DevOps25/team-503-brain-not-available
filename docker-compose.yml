@@ -12,7 +12,8 @@ services:
     networks:
       - app_network
     environment:
-      MYSQL_ROOT_PASSWORD: rand528PASS-wd
+      MARIADB_ROOT_PASSWORD: rand528PASS-wd
+      MARIADB_DATABASE: backend_db
     ports:
       - "3306:3306"
 
