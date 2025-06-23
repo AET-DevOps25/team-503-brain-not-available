@@ -1,19 +1,17 @@
 name: Deploy Helm Chart to Rancher
 
 on:
-  #workflow_run:
-    #workflows: ["Build and Publish Docker Images"]
-    #types:
-    #  - completed
-  push:
+  workflow_run:
+    workflows: ["Build and Publish Docker Images"]
+    types:
+      - completed
     branches:
       - main
-      - 47-workflow-bugfix
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    #if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Checkout repository
