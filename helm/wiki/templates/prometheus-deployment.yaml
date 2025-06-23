@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: prometheus
-          image: {{ .Values.gpt4all.image.repository }}:{{ .Values.gpt4all.image.tag }}
+          image: {{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}
           ports:
             - containerPort: 9090
           volumeMounts:
