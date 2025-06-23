@@ -1,7 +1,7 @@
 name: Deploy Helm Chart to Rancher
 
 on:
-  workflow_run:
+  #workflow_run:
     #workflows: ["Build and Publish Docker Images"]
     #types:
     #  - completed
