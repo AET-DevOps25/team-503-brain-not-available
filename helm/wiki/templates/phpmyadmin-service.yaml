@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "wiki.fullname" . }}-phpmyadmin
+  name: phpmyadmin
   labels:
-    {{- include "wiki.labels" . | nindent 4 }}
+    app: phpmyadmin
 spec:
   type: ClusterIP
   ports:
@@ -12,5 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ include "wiki.name" . }}
-    component: phpmyadmin
+    app: phpmyadmin

@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiki.fullname" . }}-database
+  name: database
   labels:
-    app: {{ include "wiki.name" . }}
+    app: database
     component: database
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "wiki.name" . }}
+      app: database
       component: database
   template:
     metadata:
       labels:
-        app: {{ include "wiki.name" . }}
+        app: database
         component: database
     spec:
       containers:
@@ -29,5 +29,5 @@ spec:
       volumes:
         - name: mariadb-data
           persistentVolumeClaim:
-            claimName: {{ include "wiki.fullname" . }}-mariadb-data
+            claimName: mariadb-data
       restartPolicy: Always
