@@ -17,6 +17,7 @@ database:
     storageClass: ""
 
 phpmyadmin:
+  host: database
   image:
     repository: phpmyadmin/phpmyadmin
     tag: latest

@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiki.fullname" . }}-weaviate
+  name: weaviate
   labels:
-    app: {{ include "wiki.name" . }}-weaviate
+    app: weaviate
 spec:
   replicas: {{ .Values.weaviate.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "wiki.name" . }}-weaviate
+      app: weaviate
   template:
     metadata:
       labels:
-        app: {{ include "wiki.name" . }}-weaviate
+        app: weaviate
     spec:
       containers:
         - name: weaviate

@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "wiki.fullname" . }}-node-exporter
+  name: node-exporter
   labels:
-    app: {{ include "wiki.name" . }}-node-exporter
+    app: node-exporter
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "wiki.name" . }}-node-exporter
+      app: node-exporter
   template:
     metadata:
       labels:
-        app: {{ include "wiki.name" . }}-node-exporter
+        app: node-exporter
     spec:
       containers:
         - name: node-exporter
