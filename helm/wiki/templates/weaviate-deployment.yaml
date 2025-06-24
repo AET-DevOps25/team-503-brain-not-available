@@ -17,6 +17,7 @@ spec:
       containers:
         - name: weaviate
           image: {{ .Values.weaviate.image.repository }}:{{ .Values.weaviate.image.tag }}
+          imagePullPolicy: {{ .Values.weaviate.image.pullPolicy }}
           ports:
             - containerPort: 8080
           env:

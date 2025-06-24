@@ -17,6 +17,7 @@ spec:
       containers:
         - name: prometheus
           image: {{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}
+          imagePullPolicy: {{ .Values.prometheus.image.pullPolicy }}
           ports:
             - containerPort: 9090
       restartPolicy: Always

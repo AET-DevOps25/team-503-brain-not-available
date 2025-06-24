@@ -17,6 +17,7 @@ spec:
       containers:
         - name: node-exporter
           image: {{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}
+          imagePullPolicy: {{ .Values.nodeExporter.image.pullPolicy }}
           ports:
             - containerPort: 9100
           volumeMounts:

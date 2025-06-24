@@ -6,7 +6,7 @@ database:
   image:
     repository: mariadb
     tag: "10.7"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   service:
     type: ClusterIP
     port: 3306
@@ -21,6 +21,7 @@ phpmyadmin:
   image:
     repository: phpmyadmin/phpmyadmin
     tag: latest
+    pullPolicy: Always
   service:
     type: ClusterIP
     port: 8088
@@ -30,21 +31,25 @@ gpt4all:
   image:
     repository: ghcr.io/aet-devops25/gpt4all
     tag: latest
+    pullPolicy: Always
 
 weaviate:
   image:
     repository: ghcr.io/aet-devops25/weaviate
     tag: latest
+    pullPolicy: Always
 
 prometheus:
   image:
     repository: ghcr.io/aet-devops25/prometheus
     tag: latest
+    pullPolicy: Always
 
 grafana:
   image:
     repository: ghcr.io/aet-devops25/grafana
     tag: latest
+    pullPolicy: Always
   adminPassword: admin
   allowSignUp: false
   anonymous:
@@ -56,11 +61,13 @@ cadvisor:
   image:
     repository: gcr.io/cadvisor/cadvisor
     tag: latest
+    pullPolicy: Always
 
 nodeExporter:
   image:
     repository: prom/node-exporter
     tag: latest
+    pullPolicy: Always
 
 ingress:
   enabled: true
