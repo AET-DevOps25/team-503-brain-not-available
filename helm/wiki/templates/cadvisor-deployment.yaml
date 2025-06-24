@@ -17,6 +17,7 @@ spec:
       containers:
         - name: cadvisor
           image: {{ .Values.cadvisor.image.repository }}:{{ .Values.cadvisor.image.tag }}
+          imagePullPolicy: {{ .Values.cadvisor.image.pullPolicy }}
           ports:
             - containerPort: 8080
           volumeMounts:

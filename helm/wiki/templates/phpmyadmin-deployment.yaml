@@ -20,6 +20,7 @@ spec:
       containers:
         - name: phpmyadmin
           image: {{ .Values.phpmyadmin.image.repository }}:{{ .Values.phpmyadmin.image.tag }}
+          imagePullPolicy: {{ .Values.phpmyadmin.image.pullPolicy }}
           ports:
             - containerPort: 80
           env:

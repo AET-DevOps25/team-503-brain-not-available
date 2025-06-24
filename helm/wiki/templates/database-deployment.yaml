@@ -20,6 +20,7 @@ spec:
       containers:
         - name: database
           image: {{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}
+          imagePullPolicy: {{ .Values.database.image.pullPolicy }}
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: {{ .Values.database.rootPassword }}

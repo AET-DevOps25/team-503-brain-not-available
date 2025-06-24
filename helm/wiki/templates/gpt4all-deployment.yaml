@@ -17,5 +17,6 @@ spec:
       containers:
         - name: gpt4all
           image: {{ .Values.gpt4all.image.repository }}:{{ .Values.gpt4all.image.tag }}
+          imagePullPolicy: {{ .Values.gpt4all.image.pullPolicy }}
           ports:
             - containerPort: 5000
