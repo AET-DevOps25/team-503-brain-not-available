@@ -86,7 +86,6 @@ services:
     volumes:
       - /:/rootfs:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - /run/podman/podman.sock:/var/run/podman/podman.sock
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
     networks:

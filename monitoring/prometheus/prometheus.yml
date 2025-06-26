@@ -26,10 +26,19 @@ scrape_configs:
       format: ['prometheus']
     scheme: 'http'
 
-  - job_name: 'cadvisor'
+  - job_name: 'cadvisor-docker'
     static_configs:
       - targets: ['cadvisor:8080']
-    metrics_path: '/metrics'
-    params:
-      format: ['prometheus']
-    scheme: 'http'
+
+  - job_name: 'cadvisor'
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        action: keep
+        regex: cadvisor
+      - source_labels: [__meta_kubernetes_pod_container_port_number]
+        action: keep
+        regex: "8080"
+    metrics_path: /metrics
+    scheme: http
