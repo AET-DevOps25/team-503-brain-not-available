@@ -14,5 +14,9 @@ spec:
       targetPort: 5000
       protocol: TCP
       name: http
+    - port: 8081
+      targetPort: 8081
+      protocol: TCP
+      name: cadvisor
   selector:
     app: gpt4all
