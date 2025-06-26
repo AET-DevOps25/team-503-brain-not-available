@@ -11,5 +11,9 @@ spec:
       targetPort: 3306
       protocol: TCP
       name: mysql
+    - port: 8081
+      targetPort: 8081
+      protocol: TCP
+      name: cadvisor
   selector:
     app: database
