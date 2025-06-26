@@ -103,7 +103,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "(time() - container_last_seen{name=\"database\"})",
+          "expr": "(time() - container_last_seen{job=\"database\",id=\"/\"})",
           "legendFormat": "Up",
           "range": true,
           "refId": "A"
@@ -163,7 +163,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=\"database\"}[1m])) * 100",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"database\", id=\"/\"}[1m])) * 100",
           "legendFormat": "CPU",
           "range": true,
           "refId": "A"
@@ -217,7 +217,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(container_memory_usage_bytes{name=\"database\"})",
+          "expr": "sum(container_memory_usage_bytes{job=\"database\", id=\"/\"})",
           "legendFormat": "Memory",
           "range": true,
           "refId": "A"
@@ -295,7 +295,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "(time() - container_last_seen{name=\"phpmyadmin\"})",
+          "expr": "(time() - container_last_seen{job=\"phpmyadmin\",id=\"/\"})",
           "legendFormat": "Up",
           "range": true,
           "refId": "A"
@@ -355,7 +355,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=\"phpmyadmin\"}[1m])) * 100",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"phpmyadmin\", id=\"/\"}[1m])) * 100",
           "legendFormat": "CPU",
           "range": true,
           "refId": "A"
@@ -409,7 +409,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(container_memory_usage_bytes{name=\"phpmyadmin\"})",
+          "expr": "sum(container_memory_usage_bytes{job=\"phpmyadmin\", id=\"/\"})",
           "legendFormat": "Memory",
           "range": true,
           "refId": "A"
@@ -556,7 +556,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=\"prometheus\"}[1m])) * 100",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"prometheus\", id=\"/\"}[1m])) * 100",
           "legendFormat": "CPU",
           "range": true,
           "refId": "A"
@@ -610,7 +610,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(container_memory_usage_bytes{name=\"prometheus\"})",
+          "expr": "sum(container_memory_usage_bytes{job=\"prometheus\", id=\"/\"})",
           "legendFormat": "Memory",
           "range": true,
           "refId": "A"
@@ -620,200 +620,12 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "text": "Down"
-                },
-                "1": {
-                  "text": "Up"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "transparent"
-              },
-              {
-                "color": "dark-red",
-                "value": 0
-              },
-              {
-                "color": "dark-green",
-                "value": 1
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 0,
-        "y": 14
-      },
-      "id": 127,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.0.2",
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "max(up{job=\"cadvisor\"})",
-          "legendFormat": "Up",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "cAdvisor",
-      "type": "stat"
-    },
-    {
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 6,
-        "y": 14
-      },
-      "id": 128,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.0.2",
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=\"cadvisor\"}[1m])) * 100",
-          "legendFormat": "CPU",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "cAdvisor CPU (%)",
-      "type": "stat"
-    },
-    {
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 12,
-        "y": 14
-      },
-      "id": 129,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.0.2",
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "sum(container_memory_usage_bytes{name=\"cadvisor\"})",
-          "legendFormat": "Memory",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "cAdvisor Memory",
-      "type": "stat"
-    },
-    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 14
       },
       "id": 124,
       "panels": [],
@@ -861,7 +673,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 19
+        "y": 15
       },
       "id": 101,
       "options": {
@@ -980,7 +792,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 19
+        "y": 15
       },
       "id": 123,
       "options": {
@@ -1040,7 +852,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 19
+        "y": 15
       },
       "id": 102,
       "options": {
@@ -1064,7 +876,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=\"gpt4all\"}[1m])) * 100",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"gpt4all\", id=\"/\"}[1m])) * 100",
           "legendFormat": "CPU",
           "range": true,
           "refId": "A"
@@ -1094,7 +906,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 19
+        "y": 15
       },
       "id": 103,
       "options": {
@@ -1118,7 +930,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(container_memory_usage_bytes{name=\"gpt4all\"})",
+          "expr": "sum(container_memory_usage_bytes{job=\"gpt4all\", id=\"/\"})",
           "legendFormat": "Memory",
           "range": true,
           "refId": "A"
@@ -1172,7 +984,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 23
+        "y": 19
       },
       "id": 135,
       "options": {
@@ -1196,7 +1008,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "(time() - container_last_seen{name=\"weaviate\"})",
+          "expr": "(time() - container_last_seen{job=\"weaviate\",id=\"/\"})",
           "legendFormat": "Up",
           "range": true,
           "refId": "A"
@@ -1232,7 +1044,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 23
+        "y": 19
       },
       "id": 105,
       "options": {
@@ -1256,7 +1068,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=\"weaviate\"}[1m])) * 100",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"weaviate\", id=\"/\"}[1m])) * 100",
           "legendFormat": "CPU",
           "range": true,
           "refId": "A"
@@ -1286,7 +1098,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 23
+        "y": 19
       },
       "id": 106,
       "options": {
@@ -1310,7 +1122,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(container_memory_usage_bytes{name=\"weaviate\"})",
+          "expr": "sum(container_memory_usage_bytes{job=\"weaviate\", id=\"/\"})",
           "legendFormat": "Memory",
           "range": true,
           "refId": "A"

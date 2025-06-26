@@ -32,6 +32,8 @@ spec:
           imagePullPolicy: {{ .Values.cadvisor.image.pullPolicy }}
           ports:
             - containerPort: 8081
+          args:
+            - --port=8081
           volumeMounts:
             - name: rootfs
               mountPath: /rootfs
