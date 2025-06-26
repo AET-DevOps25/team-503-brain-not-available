@@ -1,11 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: cadvisor
   labels:
     app: cadvisor
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: cadvisor
@@ -20,6 +19,11 @@ spec:
           imagePullPolicy: {{ .Values.cadvisor.image.pullPolicy }}
           ports:
             - containerPort: 8080
+          securityContext:
+            privileged: true
+          args:
+            - --docker
+            - --containerd
           volumeMounts:
             - name: rootfs
               mountPath: /rootfs
@@ -31,6 +35,11 @@ spec:
               readOnly: true
             - name: dockersock
               mountPath: /var/lib/docker
+              readOnly: true
+            - name: containerdsock
+              mountPath: /run/containerd/containerd.sock
+            - name: containerdlib
+              mountPath: /var/lib/containerd
               readOnly: true
       volumes:
         - name: rootfs
@@ -45,3 +54,9 @@ spec:
         - name: dockersock
           hostPath:
             path: /var/lib/docker
+        - name: containerdsock
+          hostPath:
+            path: /run/containerd/containerd.sock
+        - name: containerdlib
+          hostPath:
+            path: /var/lib/containerd
