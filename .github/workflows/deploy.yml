@@ -36,7 +36,7 @@ jobs:
         env:
           KUBECONFIG: ${{ github.workspace }}/kubeconfig
         run: |
-          helm upgrade --install wiki ./helm/wiki --namespace wiki --create-namespace
+          helm upgrade --install wiki ./helm/wiki --namespace wiki --create-namespace --recreate-pods
 
       - name: Verify Deployment
         env:
