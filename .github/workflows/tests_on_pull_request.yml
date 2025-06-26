@@ -20,8 +20,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Enter Backend Folder
+        run: cd ./backend
+
       - name: Grant execute permission for Gradle wrapper
-        run: chmod +x ./backend/gradlew
+        run: chmod +x ./gradlew
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
@@ -34,4 +37,4 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Run tests
-        run: ./backend/gradlew build
+        run: ./gradlew build
