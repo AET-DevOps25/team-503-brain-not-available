@@ -79,12 +79,13 @@ services:
       - prometheus
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: ghcr.io/aet-devops25/cadvisor:latest
     container_name: cadvisor
+    build:
+      context: ./monitoring/grafana
+      dockerfile: Dockerfile
     ports:
       - "8081:8081"
-    command:
-      - "--port=8081"
     volumes:
       - /:/rootfs:ro
       - /var/run/docker.sock:/var/run/docker.sock
