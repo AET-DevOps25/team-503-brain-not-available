@@ -61,17 +61,6 @@ services:
     depends_on:
       - database
 
-  gpt4all:
-    image: ghcr.io/aet-devops25/gpt4all:latest
-    container_name: "gpt4all"
-    build:
-      context: ./genai/gpt4all
-      dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
-    networks:
-      - app_network
-
   weaviate:
     image: ghcr.io/aet-devops25/weaviate:latest
     container_name: "weaviate"
