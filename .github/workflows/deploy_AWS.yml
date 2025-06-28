@@ -1,44 +1,48 @@
-name: Deploy Helm Chart to AWS
+name: Deploy Docker Images to AWS
 
 on:
-  workflow_run:
-    workflows: ["Build and Publish Docker Images"]
-    types:
-      - completed
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-
-    steps:
-      - name: Checkout repository
+    environment:
+      name: AWS
+      url: 'https://client.${{ vars.EC2_PUBLIC_IP }}.nip.io' 
+    steps:      
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Kubectl
-        uses: azure/setup-kubectl@v3
+      - name: Copy Docker Compose File From Repo to VM Host
+        uses: appleboy/scp-action@v0.1.7
         with:
-          version: 'v1.23.0' 
+          host: ${{ vars.EC2_PUBLIC_IP }}
+          username: ${{ vars.AWS_EC2_USER }}
+          key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+          source: "./compose.aws.yml"
+          target: /home/${{ vars.AWS_EC2_USER }}
 
-      - name: Install Helm
-        uses: azure/setup-helm@v1
+      - name: SSH to VM and Create .env.prod
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.EC2_PUBLIC_IP }}
+          username: ${{ vars.AWS_EC2_USER }}
+          key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+          script: |
+            rm .env.prod
+            touch .env.prod
+            echo "CLIENT_HOST=client.${{ vars.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
+            echo "SERVER_HOST=api.${{ vars.EC2_PUBLIC_IP }}.nip.io" >> .env.prod
+            echo "PUBLIC_API_URL=https://api.${{ vars.EC2_PUBLIC_IP }}.nip.io/api" >> .env.prod
 
-      - name: Create kubeconfig file
-        run: echo "${{ secrets.KUBECONFIG_DATA }}" > ${{ github.workspace }}/kubeconfig
-
-      - name: Set up Helm
-        uses: azure/setup-helm@v4
-
-      - name: Deploy Helm Chart
-        env:
-          KUBECONFIG: ${{ github.workspace }}/kubeconfig
-        run: |
-          helm upgrade --install wiki ./helm/wiki --namespace wiki --create-namespace --recreate-pods
-
-      - name: Verify Deployment
-        env:
-            KUBECONFIG: ${{ github.workspace }}/kubeconfig
-        run: |
-          kubectl get pods -n wiki
+      - name: SSH to VM and Execute Docker-Compose Up
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ vars.EC2_PUBLIC_IP }}
+          username: ${{ vars.AWS_EC2_USER }}
+          key: ${{ secrets.AWS_EC2_PRIVATE_KEY }}
+          script: |
+            echo "Logging into Docker registry..."
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            echo "Starting Docker Compose..."
+            docker compose -f compose.aws.yml --env-file=.env.prod up --pull=always -d          
