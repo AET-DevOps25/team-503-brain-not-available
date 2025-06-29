@@ -2,6 +2,18 @@ volumes:
   mariadb_data:
 
 services:
+  frontend:
+    image: ghcr.io/aet-devops25/frontend:latest
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: "client"
+    restart: always
+    networks:
+      - app_network
+    ports:
+      - "80:80"
+
   database:
     image: mariadb:10.7
     container_name: "mariadb"
