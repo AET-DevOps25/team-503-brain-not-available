@@ -4,6 +4,7 @@ volumes:
 
 services:
   backend:
+    image: ghcr.io/aet-devops25/backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
