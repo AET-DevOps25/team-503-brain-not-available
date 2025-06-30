@@ -1,0 +1,77 @@
+# Default configuration values for the Helm chart
+
+replicaCount: 1
+
+database:
+  image:
+    repository: mariadb
+    tag: "10.7"
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 3306
+  rootPassword: rand528PASS-wd
+  persistence:
+    enabled: true
+    size: 8Gi
+    storageClass: ""
+
+phpmyadmin:
+  host: database
+  image:
+    repository: phpmyadmin/phpmyadmin
+    tag: latest
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8088
+  uploadLimit: 500M
+
+gpt4all:
+  image:
+    repository: ghcr.io/aet-devops25/gpt4all
+    tag: latest
+    pullPolicy: Always
+
+weaviate:
+  image:
+    repository: ghcr.io/aet-devops25/weaviate
+    tag: latest
+    pullPolicy: Always
+
+prometheus:
+  image:
+    repository: ghcr.io/aet-devops25/prometheus
+    tag: latest
+    pullPolicy: Always
+
+grafana:
+  image:
+    repository: ghcr.io/aet-devops25/grafana
+    tag: latest
+    pullPolicy: Always
+  adminPassword: admin
+  allowSignUp: false
+  anonymous:
+    enabled: true
+    orgRole: Viewer
+    orgId: 1
+
+cadvisor:
+  image:
+    repository: gcr.io/cadvisor/cadvisor
+    tag: latest
+    pullPolicy: Always
+
+ingress:
+  enabled: true
+  className: "nginx"
+  host: "wiki-devops25.student.k8s.aet.cit.tum.de"
+  tls: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

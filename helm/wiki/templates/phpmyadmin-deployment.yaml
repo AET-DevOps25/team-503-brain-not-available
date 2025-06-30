@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpmyadmin
+  labels:
+    app: phpmyadmin
+    component: phpmyadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpmyadmin
+      component: phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin
+        component: phpmyadmin
+    spec:
+      containers:
+        - name: phpmyadmin
+          image: {{ .Values.phpmyadmin.image.repository }}:{{ .Values.phpmyadmin.image.tag }}
+          imagePullPolicy: {{ .Values.phpmyadmin.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+          env:
+            - name: PMA_HOST
+              value: {{ .Values.phpmyadmin.host }}
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ .Values.database.rootPassword }}
+            - name: UPLOAD_LIMIT
+              value: {{ .Values.phpmyadmin.uploadLimit }}
+          volumeMounts:
+            - name: proc-meminfo
+              mountPath: /proc/meminfo
+              readOnly: true
+            - name: proc-stat
+              mountPath: /proc/stat
+              readOnly: true
+        - name: cadvisor
+          image: {{ .Values.cadvisor.image.repository }}:{{ .Values.cadvisor.image.tag }}
+          imagePullPolicy: {{ .Values.cadvisor.image.pullPolicy }}
+          ports:
+            - containerPort: 8081
+          args:
+            - --port=8081
+          volumeMounts:
+            - name: rootfs
+              mountPath: /rootfs
+              readOnly: true
+            - name: varrun
+              mountPath: /var/run
+            - name: sys
+              mountPath: /sys
+              readOnly: true
+            - name: dockersock
+              mountPath: /var/lib/docker
+              readOnly: true
+      volumes:
+        - name: rootfs
+          hostPath:
+            path: /
+        - name: varrun
+          hostPath:
+            path: /var/run
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: dockersock
+          hostPath:
+            path: /var/lib/docker
+        - name: proc-meminfo
+          hostPath:
+            path: /proc/meminfo
+        - name: proc-stat
+          hostPath:
+            path: /proc/stat

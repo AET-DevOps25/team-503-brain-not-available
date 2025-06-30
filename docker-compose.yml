@@ -1,5 +1,6 @@
 volumes:
   mariadb_data:
+  grafana-storage:
 
 services:
   frontend:
@@ -14,16 +15,29 @@ services:
     ports:
       - "80:80"
 
+  backend:
+    image: ghcr.io/aet-devops25/backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: "backend"
+    restart: always
+    networks:
+      - app_network
+    ports:
+      - "1111:1111"
+
   database:
     image: mariadb:10.7
-    container_name: "mariadb"
+    container_name: "database"
     restart: always
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
       - app_network
     environment:
-      MYSQL_ROOT_PASSWORD: rand528PASS-wd
+      MARIADB_ROOT_PASSWORD: rand528PASS-wd
+      MARIADB_DATABASE: backend_db
     ports:
       - "3306:3306"
 
@@ -40,20 +54,21 @@ services:
       - app_network
     depends_on:
       - database
-    volumes:
-      - /proc/meminfo:/proc/meminfo:ro
-      - /proc/stat:/proc/stat:ro
 
   gpt4all:
+    image: ghcr.io/aet-devops25/gpt4all:latest
+    container_name: "gpt4all"
     build:
       context: ./genai/gpt4all
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "5001:5000"
     networks:
-      - genai-network
+      - app_network
 
   weaviate:
+    image: ghcr.io/aet-devops25/weaviate:latest
+    container_name: "weaviate"
     build:
       context: ./genai/weaviate
       dockerfile: Dockerfile
@@ -61,10 +76,45 @@ services:
       - "8080:8080"
       - "50051:50051"
     networks:
-      - genai-network
+      - app_network
+
+  prometheus:
+    image: ghcr.io/aet-devops25/prometheus:latest
+    container_name: "prometheus"
+    build:
+      context: ./monitoring/prometheus
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    networks:
+      - app_network
+
+  grafana:
+    image: ghcr.io/aet-devops25/grafana:latest
+    container_name: "grafana"
+    build:
+      context: ./monitoring/grafana
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
+    depends_on:
+      - prometheus
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8081:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - app_network
 
 networks:
   app_network:
-    driver: bridge
-  genai-network:
     driver: bridge

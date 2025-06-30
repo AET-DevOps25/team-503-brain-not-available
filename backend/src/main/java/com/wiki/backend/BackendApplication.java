@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @SpringBootApplication
 @CrossOrigin(origins = "http://localhost:5173")
@@ -23,6 +26,9 @@ public class BackendApplication {
 
     @Autowired
     private PageRepository pageRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
@@ -64,5 +70,54 @@ public class BackendApplication {
                 return ResponseEntity.ok(page);
             })
             .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<User> getUser(@PathVariable UUID userId) {
+        Optional<User> user = userRepository.findById(userId);
+        return user.map(ResponseEntity::ok)
+                   .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/user")
+    public User createUser(@RequestBody User user) {
+        // Ensure the user has a UUID set
+        if (user.getId() == null) {
+            user.setId(UUID.randomUUID());
+        }
+        return userRepository.save(user);
+    }
+
+    @PutMapping("/user/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable UUID userId, @RequestBody User userDetails) {
+        return userRepository.findById(userId)
+            .map(user -> {
+                user.setName(userDetails.getName());
+                user.setPasswordHash(userDetails.getPasswordHash());
+                user.setEmail(userDetails.getEmail());
+                return ResponseEntity.ok(userRepository.save(user));
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<User> deleteUser(@PathVariable UUID userId) {
+        return userRepository.findById(userId)
+            .map(user -> {
+                userRepository.delete(user);
+                return ResponseEntity.ok(user);
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/authenticateUser")
+    public boolean authenticateUser(@RequestParam String email, @RequestParam String password) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            String storedHash = user.getPasswordHash();
+            return BCrypt.checkpw(password, storedHash);
+        }
+        return false;
     }
 }

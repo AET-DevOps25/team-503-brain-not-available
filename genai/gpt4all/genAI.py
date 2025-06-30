@@ -3,6 +3,7 @@ from fastapi import FastAPI, requests
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 import uvicorn
+from prometheus_fastapi_instrumentator import Instrumentator
 import weaviate
 import weaviate.classes.config as wc
 
@@ -10,6 +11,8 @@ BACKEND_URL = "http://localhost:1111"
 WEAVIATE_HOST = "weaviate"
 
 app = FastAPI()
+Instrumentator().instrument(app).expose(app)
+
 model = GPT4All("/models/Meta-Llama-3-8B-Instruct.Q4_0.gguf")  # downloads / loads a 4.66GB LLM
 
 class ChatRequest(BaseModel):

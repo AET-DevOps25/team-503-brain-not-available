@@ -11,6 +11,7 @@ RUN python3 -m venv /venv && \
     /venv/bin/pip install gpt4all && \
     /venv/bin/pip install fastapi && \
     /venv/bin/pip install uvicorn && \
+    /venv/bin/pip install prometheus_fastapi_instrumentator && \
     /venv/bin/pip install -U weaviate-client
 
 # Download the Llama 3 model directly into the container
