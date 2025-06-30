@@ -5,9 +5,6 @@ volumes:
 services:
   frontend:
     image: ghcr.io/aet-devops25/frontend:latest
-    build:
-      context: ./client
-      dockerfile: Dockerfile
     container_name: "client"
     restart: always
     networks:
@@ -17,9 +14,6 @@ services:
 
   backend:
     image: ghcr.io/aet-devops25/backend:latest
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
     container_name: "backend"
     restart: always
     environment:
