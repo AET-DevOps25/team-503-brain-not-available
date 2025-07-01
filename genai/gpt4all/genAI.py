@@ -18,7 +18,7 @@ OLLAMA_MODEL = "llama3.3:latest"
 app = FastAPI()
 Instrumentator().instrument(app).expose(app)
 
-model = GPT4All("/models/Meta-Llama-3-8B-Instruct.Q4_0.gguf")  # downloads / loads a 4.66GB LLM
+model = GPT4All("Meta-Llama-3-8B-Instruct.Q4_0.gguf")  # downloads / loads a 4.66GB LLM
 
 class ChatRequest(BaseModel):
     prompt: str
