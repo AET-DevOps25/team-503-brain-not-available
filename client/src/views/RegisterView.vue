@@ -35,9 +35,9 @@ import { Label } from '@/components/ui/label'
       <div class="grid gap-2">
         <div class="mt-4 text-center text-sm">
             Already have an account?
-            <a href="#" class="underline">
-                Sign in
-            </a>
+            <router-link to="/login">
+                <a href="#" class="underline">Sign in</a>
+            </router-link>
         </div>
       </div>
     </CardFooter>
