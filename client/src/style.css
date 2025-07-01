@@ -80,7 +80,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  /*background-color: #1a1a1a;*/
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -98,7 +98,7 @@ button:focus-visible {
 
 html, body, #app {
   height: 100%;
-  width:100%;
+  width: 100%;
   margin: 0;
   padding: 0;
 }
@@ -112,7 +112,7 @@ html, body, #app {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    /*background-color: #2e2e2e;*/
   }
 }
 
