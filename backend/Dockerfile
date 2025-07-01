@@ -1,31 +1,21 @@
-# Use an official OpenJDK runtime as a parent image
-FROM amazoncorretto:21
+# Build stage
+FROM amazoncorretto:21 AS builder
 
-# Update OS packages to latest security patches
-RUN yum update -y && yum clean all
-
-# Set the working directory inside the container
 WORKDIR /app
-
-# Copy Gradle wrapper and build files
 COPY gradlew .
 COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 COPY src src
 
-# Give execution permission to Gradle wrapper
 RUN chmod +x gradlew
-
-# Build the jar file
 RUN ./gradlew build --no-daemon
 
-# Copy the built jar file into the container
-RUN cp build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
-#COPY build/libs/*.jar app.jar
+# Runtime stage
+FROM amazoncorretto:21
 
-# Expose the port the app runs on
+WORKDIR /app
+COPY --from=builder /app/build/libs/*.jar app.jar
+
 EXPOSE 1111
-
-# Run the jar file
 ENTRYPOINT ["java", "-jar", "app.jar"]
