@@ -54,13 +54,13 @@ watch(
             </BreadcrumbItem>
             <BreadcrumbSeparator class="hidden md:block" />
             <BreadcrumbItem>
-              <BreadcrumbPage>{{ page.title }}</BreadcrumbPage>
+              <BreadcrumbPage v-if="page">{{ page.title }}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </header>
       <div class="flex flex-1 flex-col gap-4 p-4">
-        <div class="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min p-5">
+        <div class="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min p-8">
           <div v-if="page">
               <h1>{{ page.title }}</h1>
               <p>{{ page.content }}</p>
@@ -70,9 +70,6 @@ watch(
           </div>
         </div>
       </div>
-      <div id="page-wrapper" class="w-full">
-        
-    </div>
     </SidebarInset>
   </SidebarProvider>
 </template>
