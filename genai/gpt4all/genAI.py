@@ -1,5 +1,6 @@
 from gpt4all import GPT4All
-from fastapi import FastAPI, requests
+from fastapi import Body, FastAPI
+import requests
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 import uvicorn
@@ -7,8 +8,12 @@ from prometheus_fastapi_instrumentator import Instrumentator
 import weaviate
 import weaviate.classes.config as wc
 
-BACKEND_URL = "http://localhost:1111"
+BACKEND_URL = "http://server:1111"
 WEAVIATE_HOST = "weaviate"
+AI_BACKEND = {"mode": "local"}  # or "cloud"
+OLLAMA_API_URL = "https://gpu.aet.cit.tum.de/api/chat/completions"
+OLLAMA_API_KEY = "sk-741cb60afc8d499da35726c28be3e054"
+OLLAMA_MODEL = "llama3.3:latest"
 
 app = FastAPI()
 Instrumentator().instrument(app).expose(app)
@@ -81,14 +86,40 @@ def get_context_from_weaviate(query, limit=3):
         context += f"{title}: {content}\n"
     return context
 
+@app.post("/set_backend")
+async def set_backend(mode: str = Body(..., embed=True)):
+    if mode not in ("local", "cloud"):
+        return JSONResponse(status_code=400, content={"error": "Invalid mode"})
+    AI_BACKEND["mode"] = mode
+    return {"status": f"AI backend set to {mode}"}
+
 @app.post("/chat")
 async def chat(request: ChatRequest):
-    # Kontext aus Weaviate abrufen
     context = get_context_from_weaviate(request.prompt)
-    full_prompt = f"Context:\n{context}\n\nUser: {request.prompt}"
-    with model.chat_session():
-        response = model.generate(full_prompt, max_tokens=1024)
-    return JSONResponse(content={"response": response})
+    if AI_BACKEND["mode"] == "local":
+        full_prompt = f"Context:\n{context}\n\nUser: {request.prompt}"
+        with model.chat_session():
+            response = model.generate(full_prompt, max_tokens=1024)
+        return JSONResponse(content={"response": response})
+    else:
+        # Cloud AI via Ollama API Proxy, include context in prompt
+        headers = {
+            "Authorization": f"Bearer {OLLAMA_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        prompt_with_context = f"Context:\n{context}\n\nUser: {request.prompt}"
+        payload = {
+            "model": OLLAMA_MODEL,
+            "messages": [{"role": "user", "content": prompt_with_context}]
+        }
+        try:
+            resp = requests.post(OLLAMA_API_URL, headers=headers, json=payload, timeout=30)
+            resp.raise_for_status()
+            data = resp.json()
+            response_text = data.get("choices", [{}])[0].get("message", {}).get("content", "")
+            return JSONResponse(content={"response": response_text})
+        except Exception as e:
+            return JSONResponse(status_code=503, content={"error": str(e)})
 
 if __name__ == "__main__":
     update_weaviate()

@@ -27,5 +27,7 @@ ENV PATH="/venv/bin:$PATH"
 # Set working directory
 WORKDIR /app
 
+EXPOSE 5000
+
 # Set default command (change as needed)
 CMD [ "python", "genAI.py" ]
