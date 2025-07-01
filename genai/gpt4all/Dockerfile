@@ -14,10 +14,6 @@ RUN python3 -m venv /venv && \
     /venv/bin/pip install prometheus_fastapi_instrumentator && \
     /venv/bin/pip install -U weaviate-client
 
-# Download the Llama 3 model directly into the container
-RUN mkdir -p /models && \
-    wget -O /models/Meta-Llama-3-8B-Instruct.Q4_0.gguf https://gpt4all.io/models/gguf/Meta-Llama-3-8B-Instruct.Q4_0.gguf
-
 # Deploy the genAI component
 COPY genAI.py /app/genAI.py
 
