@@ -21,7 +21,8 @@ RUN chmod +x gradlew
 RUN ./gradlew build --no-daemon
 
 # Copy the built jar file into the container
-COPY build/libs/*.jar app.jar
+RUN cp build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
+#COPY build/libs/*.jar app.jar
 
 # Expose the port the app runs on
 EXPOSE 1111
