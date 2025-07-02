@@ -24,6 +24,8 @@ spec:
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: {{ .Values.database.rootPassword }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.database.name }}
           volumeMounts:
             - name: mariadb-data
               mountPath: /var/lib/mysql

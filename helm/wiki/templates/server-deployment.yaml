@@ -37,6 +37,11 @@ spec:
         - name: server
           image: {{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          env:
+            - name: SERVER_PORT
+              value: "1111"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mariadb://database:3306/backend_db"
           ports:
             - containerPort: 1111
       volumes:
