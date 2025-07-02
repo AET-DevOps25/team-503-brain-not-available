@@ -15,6 +15,7 @@ database:
     enabled: true
     size: 8Gi
     storageClass: ""
+  name: backend_db
 
 phpmyadmin:
   host: database
