@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootApplication
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class BackendApplication {
 
