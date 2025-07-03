@@ -1,11 +1,8 @@
 name: Lint with SpotBugs
 
 on:
-  #pull_request:
-  #  branches: [ main ]
-  push:
-    branches:
-      - linting
+  pull_request:
+    branches: [ main ]
 
 jobs:
   spotbugs:
