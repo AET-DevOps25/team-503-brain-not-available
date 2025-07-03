@@ -1,4 +1,4 @@
-name: Lint Vue Frontend
+name: Lint Vue Client with ESLint
 
 on:
   #pull_request:
