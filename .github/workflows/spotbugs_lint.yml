@@ -22,7 +22,7 @@ jobs:
           java-version: '21'
 
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        run: chmod +x ./backend/gradlew
 
       - name: Run SpotBugs
-        run: ./gradlew spotbugsMain spotbugsTest
+        run: ./backend/gradlew spotbugsMain spotbugsTest
