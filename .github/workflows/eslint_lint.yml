@@ -1,11 +1,8 @@
 name: Lint Vue Client with ESLint
 
 on:
-  #pull_request:
-  #  branches: [ main ]
-  push:
-    branches:
-      - "client-linting"
+  pull_request:
+    branches: [ main ]
 
 jobs:
   lint:
