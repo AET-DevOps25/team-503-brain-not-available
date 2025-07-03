@@ -1,9 +1,7 @@
 name: Deploy Docker Images to AWS
 
 on:
-  push:
-    branches:
-      - "aws_deployment"
+  workflow_dispatch:
 
 jobs:
   deploy_AWS:
