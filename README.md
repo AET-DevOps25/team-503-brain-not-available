@@ -101,6 +101,41 @@ helm upgrade --install wiki ./helm/wiki --namespace wiki --create-namespace --re
 
 ---
 
+## Deployment to AWS
+
+- Use an ubuntu EC2 instance with enouth storage for the AI, we use t3.medium with 30GB storage.
+
+- Set up the instance:
+   ```sh
+   # Add Docker's official GPG key:
+   sudo apt-get update
+   sudo apt-get install ca-certificates curl
+   sudo install -m 0755 -d /etc/apt/keyrings
+   sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+   sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+   # Add the repository to Apt sources:
+   echo \
+   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+   $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   sudo apt-get update
+
+   # Install Docker
+   sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+   # Allow user to run Docker commands
+   sudo usermod -a -G docker ubuntu
+   ```
+
+- open port _1111_ for accessing the API in the AWS settings
+
+- Configure the _AWS_EC2_PRIVATE_KEY_ secret and the _EC2_PUBLIC_IP_ variable in GitHub
+
+- Run the _Deploy Docker Images to AWS_ action
+
+---
+
 ## Usage
 
 1. **Login:** Login to your account to access and edit wiki pages.
