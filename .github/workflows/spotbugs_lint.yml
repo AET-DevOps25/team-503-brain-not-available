@@ -1,0 +1,28 @@
+name: Lint with SpotBugs
+
+on:
+  #pull_request:
+  #  branches: [ main ]
+  push:
+    branches:
+      - linting
+
+jobs:
+  spotbugs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Run SpotBugs
+        run: ./gradlew spotbugsMain spotbugsTest
