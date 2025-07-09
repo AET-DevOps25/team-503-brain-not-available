@@ -15,6 +15,7 @@ database:
     enabled: true
     size: 8Gi
     storageClass: ""
+  name: backend_db
 
 phpmyadmin:
   host: database
@@ -70,6 +71,20 @@ ingress:
   tls: true
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/aet-devops25/frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+
+server:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/aet-devops25/backend
+    tag: latest
+    pullPolicy: IfNotPresent
 
 resources: {}
 nodeSelector: {}

@@ -1,34 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: database
+  name: frontend
   labels:
-    app: database
-    component: database
+    app: frontend
 spec:
-  replicas: 1
+  replicas: {{ .Values.frontend.replicaCount }}
   selector:
     matchLabels:
-      app: database
-      component: database
+      app: frontend
   template:
     metadata:
       labels:
-        app: database
-        component: database
+        app: frontend
     spec:
       containers:
-        - name: database
-          image: {{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}
-          imagePullPolicy: {{ .Values.database.image.pullPolicy }}
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: {{ .Values.database.rootPassword }}
-            - name: MYSQL_DATABASE
-              value: {{ .Values.database.name }}
-          volumeMounts:
-            - name: mariadb-data
-              mountPath: /var/lib/mysql
         - name: cadvisor
           image: {{ .Values.cadvisor.image.repository }}:{{ .Values.cadvisor.image.tag }}
           imagePullPolicy: {{ .Values.cadvisor.image.pullPolicy }}
@@ -48,6 +34,11 @@ spec:
             - name: dockersock
               mountPath: /var/lib/docker
               readOnly: true
+        - name: frontend
+          image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          ports:
+            - containerPort: 80
       volumes:
         - name: rootfs
           hostPath:
@@ -61,7 +52,3 @@ spec:
         - name: dockersock
           hostPath:
             path: /var/lib/docker
-        - name: mariadb-data
-          persistentVolumeClaim:
-            claimName: mariadb-data
-      restartPolicy: Always

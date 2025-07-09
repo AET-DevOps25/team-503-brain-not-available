@@ -15,6 +15,24 @@ services:
     ports:
       - "80:80"
 
+  backend:
+    image: ghcr.io/aet-devops25/backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: "backend"
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://database:3306/backend_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: rand528PASS-wd
+    depends_on:
+      - database
+    networks:
+      - app_network
+    ports:
+      - "1111:1111"
+
   database:
     image: mariadb:10.7
     container_name: "database"

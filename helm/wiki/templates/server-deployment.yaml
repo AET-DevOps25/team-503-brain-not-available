@@ -1,34 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: database
+  name: server
   labels:
-    app: database
-    component: database
+    app: server
 spec:
-  replicas: 1
+  replicas: {{ .Values.server.replicaCount }}
   selector:
     matchLabels:
-      app: database
-      component: database
+      app: server
   template:
     metadata:
       labels:
-        app: database
-        component: database
+        app: server
     spec:
       containers:
-        - name: database
-          image: {{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}
-          imagePullPolicy: {{ .Values.database.image.pullPolicy }}
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: {{ .Values.database.rootPassword }}
-            - name: MYSQL_DATABASE
-              value: {{ .Values.database.name }}
-          volumeMounts:
-            - name: mariadb-data
-              mountPath: /var/lib/mysql
         - name: cadvisor
           image: {{ .Values.cadvisor.image.repository }}:{{ .Values.cadvisor.image.tag }}
           imagePullPolicy: {{ .Values.cadvisor.image.pullPolicy }}
@@ -48,6 +34,16 @@ spec:
             - name: dockersock
               mountPath: /var/lib/docker
               readOnly: true
+        - name: server
+          image: {{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          env:
+            - name: SERVER_PORT
+              value: "1111"
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mariadb://database:3306/backend_db"
+          ports:
+            - containerPort: 1111
       volumes:
         - name: rootfs
           hostPath:
@@ -61,7 +57,3 @@ spec:
         - name: dockersock
           hostPath:
             path: /var/lib/docker
-        - name: mariadb-data
-          persistentVolumeClaim:
-            claimName: mariadb-data
-      restartPolicy: Always
