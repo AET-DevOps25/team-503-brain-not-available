@@ -80,10 +80,6 @@ public class BackendApplication {
 
     @PostMapping("/user")
     public User createUser(@RequestBody User user) {
-        // Ensure the user has a UUID set
-        if (user.getId() == null) {
-            user.setId(UUID.randomUUID());
-        }
         return userRepository.save(user);
     }
 
