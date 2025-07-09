@@ -80,6 +80,7 @@ public class BackendApplication {
 
     @PostMapping("/user")
     public User createUser(@RequestBody User user) {
+        user.setPasswordHash(BCrypt.hashpw(user.getPasswordHash(), BCrypt.gensalt()));
         return userRepository.save(user);
     }
 
