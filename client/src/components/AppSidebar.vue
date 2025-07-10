@@ -22,6 +22,7 @@ import {
 import { Calendar, Home, Inbox, Search, Settings, FileText, User2, ChevronUp, Ellipsis } from "lucide-vue-next"
 import { ref, onMounted } from "vue"
 import { pageService } from "@/service/pageService"
+import type { Page } from "@/service/pageService"
 
 const items = [
     {
@@ -61,7 +62,7 @@ onMounted(async () => {
 async function deletePage(pageId: number) {
     if (confirm("Willst du diese Seite wirklich löschen?")) {
         await pageService.deletePage(pageId)
-        pages.value = pages.value.filter((p: any) => p.pageId !== pageId)
+        pages.value = pages.value.filter((p: Page) => p.pageId !== pageId)
     }
 }
 
