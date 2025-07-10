@@ -111,7 +111,8 @@ async function savePage() {
               </div>
           </div>
           <div v-else>
-              <p>Lade Seite…</p>
+              <p v-if="route.params.id">Lade Seite…</p>
+              <p v-else>Willkommen im Wiki.<br><br>Erstelle deine erste Seite oben links!</p>
           </div>
         </div>
       </div>
