@@ -22,6 +22,7 @@ import {
 import { Calendar, Home, Inbox, Search, Settings, FileText, User2, ChevronUp, Ellipsis } from "lucide-vue-next"
 import { ref, onMounted } from "vue"
 import { pageService } from "@/service/pageService"
+import type { Page } from "@/service/pageService"
 
 const items = [
     {
@@ -61,7 +62,7 @@ onMounted(async () => {
 async function deletePage(pageId: number) {
     if (confirm("Willst du diese Seite wirklich löschen?")) {
         await pageService.deletePage(pageId)
-        pages.value = pages.value.filter((p: any) => p.pageId !== pageId)
+        pages.value = pages.value.filter((p: Page) => p.pageId !== pageId)
     }
 }
 
@@ -96,10 +97,11 @@ async function createPage() {
             <SidebarGroup>
                 <div class="flex items-center justify-between px-4 py-2">
                     <SidebarGroupLabel>Seiten</SidebarGroupLabel>
-                    <button
+                    <Button
                         @click="createPage"
                         class="ml-2 p-1 rounded hover:bg-gray-100 text-blue-600 text-base h-7 w-7 flex items-center justify-center"
                         title="Neue Seite erstellen"
+                        variant="primary"
                     >
                         <span class="leading-none">+</span>
                     </button>
@@ -107,7 +109,7 @@ async function createPage() {
                 <SidebarGroupContent>
                     <SidebarMenu>
                         <SidebarMenuItem v-for="page in pages" :key="page.id" class="flex items-center justify-between">
-                            <SidebarMenuButton asChild class="flex-1 min-w-0">
+                            <SidebarMenuButton asChild class="flex-1 min-w-0" variant="ghost">
                                 <router-link :to="`/pages/${page.pageId}`" class="flex items-center min-w-0">
                                     <FileText style="margin-right: 8px;" />
                                     <span class="truncate">{{ page.title }}</span>
@@ -115,7 +117,7 @@ async function createPage() {
                             </SidebarMenuButton>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <button class="ml-2 rounded hover:bg-gray-100 h-7 w-13 flex items-center justify-center">
+                                    <button class="ml-2 rounded hover:bg-gray-100 h-7 w-13 flex items-center justify-center" variants="secondary">
                                         <Ellipsis />
                                     </button>
                                 </DropdownMenuTrigger>
@@ -135,7 +137,7 @@ async function createPage() {
                 <SidebarMenuItem>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <SidebarMenuButton>
+                            <SidebarMenuButton variants="secondary">
                                 <User2 /> Username
                                 <ChevronUp class="ml-auto" />
                             </SidebarMenuButton>

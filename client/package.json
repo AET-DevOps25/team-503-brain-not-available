@@ -21,7 +21,8 @@
     "tailwindcss": "^4.1.7",
     "tw-animate-css": "^1.3.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vue-sonner": "^2.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
