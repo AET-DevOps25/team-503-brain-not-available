@@ -11,6 +11,7 @@ const routes = [
     { path: '/register', name: 'Register', component: RegisterView },
     { path: '/settings', name: 'Settings', component: PageView },
     { path: '/profile', name: 'Profile', component: PageView },
+    { path: '/pages', name: 'PageViewEmpty', component: PageView },
     { path: '/pages/:id', name: 'PageView', component: PageView },
 ]
 
