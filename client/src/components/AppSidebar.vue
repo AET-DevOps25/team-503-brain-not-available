@@ -24,34 +24,6 @@ import { ref, onMounted } from "vue"
 import { pageService } from "@/service/pageService"
 import type { Page } from "@/service/pageService"
 
-const items = [
-    {
-        title: "Home",
-        url: "#",
-        icon: Home,
-    },
-    {
-        title: "Inbox",
-        url: "/settings",
-        icon: Inbox,
-    },
-    {
-        title: "Calendar",
-        url: "/profile",
-        icon: Calendar,
-    },
-    {
-        title: "Search",
-        url: "#",
-        icon: Search,
-    },
-    {
-        title: "Settings",
-        url: "#",
-        icon: Settings,
-    },
-];
-
 // Seiten aus dem Page-Service laden
 const pages = ref([])
 
@@ -79,21 +51,6 @@ async function createPage() {
     <Sidebar>
         <SidebarHeader />
         <SidebarContent>
-            <SidebarGroup>
-                <SidebarGroupLabel>Application</SidebarGroupLabel>
-                <SidebarGroupContent>
-                    <SidebarMenu>
-                        <SidebarMenuItem v-for="item in items" :key="item.title">
-                            <SidebarMenuButton asChild>
-                                <a :href="item.url">
-                                    <component :is="item.icon" />
-                                    <span>{{item.title}}</span>
-                                </a>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarGroupContent>
-            </SidebarGroup>
             <SidebarGroup>
                 <div class="flex items-center justify-between px-4 py-2">
                     <SidebarGroupLabel>Seiten</SidebarGroupLabel>
@@ -146,9 +103,6 @@ async function createPage() {
                             side="top"
                             class="w-[--reka-popper-anchor-width]"
                         >
-                            <DropdownMenuItem>
-                                <span>Account</span>
-                            </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <span>Sign out</span>
                             </DropdownMenuItem>

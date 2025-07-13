@@ -9,6 +9,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
 import {
   SidebarInset,
   SidebarProvider,
@@ -36,6 +37,26 @@ watch(
     loadPage(parseInt(newId as string, 10))
   }
 )
+
+const isEditing = ref(false)
+const editedPage = ref<Page | null>(null)
+
+function enableEdit() {
+  if (page.value) {
+    // copy page values to editedPage in order to not directly edit the original page
+    editedPage.value = { ...page.value }
+    isEditing.value = true
+  }
+}
+
+async function savePage() {
+  if (editedPage.value) {
+    console.log('Speichere Seite:', editedPage.value)
+    await pageService.updatePage(editedPage.value.pageId, editedPage.value)
+    page.value = { ...editedPage.value } // refresh values
+    isEditing.value = false
+  }
+}
 </script>
 
 <template>
@@ -62,11 +83,36 @@ watch(
       <div class="flex flex-1 flex-col gap-4 p-4">
         <div class="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min p-8">
           <div v-if="page">
-              <h1>{{ page.title }}</h1>
-              <p>{{ page.content }}</p>
+              <div class="flex justify-between items-center mb-4">
+                <h1 v-if="!isEditing">{{ page.title }}</h1>
+                <input
+                  v-else
+                  v-model="editedPage.title"
+                  class="text-2xl font-bold border p-2 w-full"
+                />
+
+                <Button
+                  @click="isEditing ? savePage() : enableEdit()"
+                  class="ml-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  {{ isEditing ? 'Speichern' : 'Bearbeiten' }}
+              </Button>
+              </div>
+
+              <div v-if="!isEditing">
+                <p class="whitespace-pre-line">{{ page.content }}</p>
+              </div>
+              <div v-else>
+                <textarea
+                  v-model="editedPage.content"
+                  rows="15"
+                  class="border p-2 w-full font-mono"
+                />
+              </div>
           </div>
           <div v-else>
-              <p>Lade Seite…</p>
+              <p v-if="route.params.id">Lade Seite…</p>
+              <p v-else>Willkommen im Wiki.<br><br>Erstelle deine erste Seite oben links!</p>
           </div>
         </div>
       </div>
