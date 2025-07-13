@@ -80,10 +80,7 @@ public class BackendApplication {
 
     @PostMapping("/user")
     public User createUser(@RequestBody User user) {
-        // Ensure the user has a UUID set
-        if (user.getId() == null) {
-            user.setId(UUID.randomUUID());
-        }
+        user.setPasswordHash(BCrypt.hashpw(user.getPasswordHash(), BCrypt.gensalt()));
         return userRepository.save(user);
     }
 
