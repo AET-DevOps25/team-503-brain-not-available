@@ -13,5 +13,6 @@ ENV GF_SECURITY_ADMIN_PASSWORD=admin \
 # Copy provisioning files into the image
 COPY provisioning/datasources /etc/grafana/provisioning/datasources
 COPY provisioning/dashboards /etc/grafana/provisioning/dashboards
+COPY provisioning/alerting /etc/grafana/provisioning/alerting
 
 VOLUME ["/var/lib/grafana"]

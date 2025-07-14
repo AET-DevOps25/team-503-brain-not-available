@@ -1,0 +1,391 @@
+apiVersion: 1
+
+groups:
+  - name: Microservices Down
+    folder: Provisioned Alerts
+    interval: 1m
+    rules:
+      - uid: mariadb-down
+        title: MariaDB Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus-main
+            model:
+              editorMode: code
+              expr: max((time() - container_last_seen{name="database"}) or (time() - container_last_seen{job="database",id="/"}))
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 60
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: NoData
+        execErrState: Error
+        for: 1m
+        annotations:
+          summary: "MariaDB is down"
+          description: "MariaDB has not been seen for over 60 seconds."
+        labels:
+          severity: critical
+        isPaused: false
+        notification_settings:
+          receiver: grafana-default-email
+
+      - uid: phpmyadmin-down
+        title: PhpMyAdmin Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus-main
+            model:
+              editorMode: code
+              expr: max((time() - container_last_seen{name="phpmyadmin"}) or (time() - container_last_seen{job="phpmyadmin",id="/"}))
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 60
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: NoData
+        execErrState: Error
+        for: 1m
+        annotations:
+          summary: "PhpMyAdmin is down"
+          description: "PhpMyAdmin has not been seen for over 60 seconds."
+        labels:
+          severity: critical
+        isPaused: false
+        notification_settings:
+          receiver: grafana-default-email
+
+      - uid: weaviate-down
+        title: Weaviate Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus-main
+            model:
+              editorMode: code
+              expr: max((time() - container_last_seen{name="weaviate"}) or (time() - container_last_seen{job="weaviate",id="/"}))
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 60
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: NoData
+        execErrState: Error
+        for: 1m
+        annotations:
+          summary: "Weaviate is down"
+          description: "Weaviate has not been seen for over 60 seconds."
+        labels:
+          severity: critical
+        isPaused: false
+        notification_settings:
+          receiver: grafana-default-email
+
+      - uid: genai-down
+        title: GenAI Service Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus-main
+            model:
+              editorMode: code
+              expr: max((time() - container_last_seen{name="gpt4all"}) or (time() - container_last_seen{job="gpt4all",id="/"}))
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 60
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: NoData
+        execErrState: Error
+        for: 1m
+        annotations:
+          summary: "GenAI Service is down"
+          description: "GenAI Service has not been seen for over 60 seconds."
+        labels:
+          severity: critical
+        isPaused: false
+        notification_settings:
+          receiver: grafana-default-email
+
+      - uid: prometheus-down
+        title: Prometheus Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus-main
+            model:
+              editorMode: code
+              expr: max((time() - container_last_seen{name="prometheus"}) or (time() - container_last_seen{job="prometheus",id="/"}))
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 60
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: NoData
+        execErrState: Error
+        for: 1m
+        annotations:
+          summary: "Prometheus is down"
+          description: "Prometheus has not been seen for over 60 seconds."
+        labels:
+          severity: critical
+        isPaused: false
+        notification_settings:
+          receiver: grafana-default-email
+
+      - uid: frontend-down
+        title: Frontend Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus-main
+            model:
+              editorMode: code
+              expr: max((time() - container_last_seen{name="client"}) or (time() - container_last_seen{job="client",id="/"}))
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 60
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: NoData
+        execErrState: Error
+        for: 1m
+        annotations:
+          summary: "Client is down"
+          description: "Client has not been seen for over 60 seconds."
+        labels:
+          severity: critical
+        isPaused: false
+        notification_settings:
+          receiver: grafana-default-email
+
+      - uid: server-down
+        title: Server Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus-main
+            model:
+              editorMode: code
+              expr: max((time() - container_last_seen{name="backend"}) or (time() - container_last_seen{job="backend",id="/"}))
+              instant: true
+              intervalMs: 1000
+              legendFormat: __auto
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 60
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - C
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: NoData
+        execErrState: Error
+        for: 1m
+        annotations:
+          summary: "Backend is down"
+          description: "Backend has not been seen for over 60 seconds."
+        labels:
+          severity: critical
+        isPaused: false
+        notification_settings:
+          receiver: grafana-default-email

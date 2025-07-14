@@ -6,9 +6,13 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090', 'prometheus:8081']
 
-  - job_name: 'spring-backend'
+  - job_name: 'backend'
     static_configs:
-      - targets: ['host.docker.internal:1111']
+      - targets: ['backend:8081']
+
+  - job_name: 'client'
+    static_configs:
+      - targets: ['client:8081']
 
   - job_name: 'weaviate'
     static_configs:
@@ -32,4 +36,4 @@ scrape_configs:
 
   - job_name: 'cadvisor-docker'
     static_configs:
-      - targets: ['cadvisor:8081']
+      - targets: ['cadvisor:8080']

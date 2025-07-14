@@ -64,6 +64,7 @@ cd team-503-brain-not-available
 ### 2. Start All Services
 
 ```sh
+docker-compose build
 docker-compose up
 ```
 
