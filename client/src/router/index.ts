@@ -6,7 +6,7 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 
 const routes = [
-    { path: '/', name: 'Dashboard', component: PageView },
+    { path: '/', redirect: '/login' },
     { path: '/login', name: 'Dashboard', component: LoginView },
     { path: '/register', name: 'Register', component: RegisterView },
     { path: '/settings', name: 'Settings', component: PageView },
