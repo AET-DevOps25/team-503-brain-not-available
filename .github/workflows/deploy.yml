@@ -35,7 +35,11 @@ jobs:
         env:
           KUBECONFIG: ${{ github.workspace }}/kubeconfig
         run: |
-          helm upgrade --install wiki ./helm/wiki --namespace wiki --create-namespace --recreate-pods
+          helm upgrade --install wiki ./helm/wiki \
+            --namespace wiki \
+            --create-namespace \
+            --recreate-pods \
+            --set image.pullPolicy=Always
 
       - name: Verify Deployment
         env:
