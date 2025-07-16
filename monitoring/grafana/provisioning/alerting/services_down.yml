@@ -280,8 +280,8 @@ groups:
         notification_settings:
           receiver: grafana-default-email
 
-      - uid: frontend-down
-        title: Frontend Down
+      - uid: client-down
+        title: Client Down
         condition: C
         data:
           - refId: A
@@ -346,7 +346,7 @@ groups:
             datasourceUid: prometheus-main
             model:
               editorMode: code
-              expr: max((time() - container_last_seen{name="backend"}) or (time() - container_last_seen{job="backend",id="/"}))
+              expr: max((time() - container_last_seen{name="server"}) or (time() - container_last_seen{job="server",id="/"}))
               instant: true
               intervalMs: 1000
               legendFormat: __auto
