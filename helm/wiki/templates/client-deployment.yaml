@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: client
   labels:
-    app: frontend
+    app: client
 spec:
-  replicas: {{ .Values.frontend.replicaCount }}
+  replicas: {{ .Values.client.replicaCount }}
   selector:
     matchLabels:
-      app: frontend
+      app: client
   template:
     metadata:
       labels:
-        app: frontend
+        app: client
     spec:
       containers:
         - name: cadvisor
@@ -34,9 +34,9 @@ spec:
             - name: dockersock
               mountPath: /var/lib/docker
               readOnly: true
-        - name: frontend
-          image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
-          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+        - name: client
+          image: {{ .Values.client.image.repository }}:{{ .Values.client.image.tag }}
+          imagePullPolicy: {{ .Values.client.image.pullPolicy }}
           ports:
             - containerPort: 80
       volumes:

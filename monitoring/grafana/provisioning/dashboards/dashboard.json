@@ -308,7 +308,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "(time() - container_last_seen{name=\"backend\"}) or (time() - container_last_seen{job=\"backend\",id=\"/\"})",
+          "expr": "(time() - container_last_seen{name=\"server\"}) or (time() - container_last_seen{job=\"server\",id=\"/\"})",
           "legendFormat": "Up",
           "range": true,
           "refId": "A"
@@ -368,7 +368,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(rate(container_cpu_usage_seconds_total{name=\"backend\"}[1m])) or sum(rate(container_cpu_usage_seconds_total{job=\"backend\", id=\"/\"}[1m]))",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{name=\"server\"}[1m])) or sum(rate(container_cpu_usage_seconds_total{job=\"server\", id=\"/\"}[1m]))",
           "legendFormat": "CPU",
           "range": true,
           "refId": "A"
@@ -422,7 +422,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(container_memory_usage_bytes{name=\"backend\"}) or sum(container_memory_usage_bytes{job=\"backend\", id=\"/\"})",
+          "expr": "sum(container_memory_usage_bytes{name=\"server\"}) or sum(container_memory_usage_bytes{job=\"server\", id=\"/\"})",
           "legendFormat": "Memory",
           "range": true,
           "refId": "A"
@@ -847,7 +847,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 20
       },
       "id": 125,
       "panels": [],
@@ -899,7 +899,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 20
+        "y": 21
       },
       "id": 137,
       "options": {
@@ -959,7 +959,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 20
+        "y": 21
       },
       "id": 114,
       "options": {
@@ -1013,7 +1013,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 20
+        "y": 21
       },
       "id": 115,
       "options": {
@@ -1052,7 +1052,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 25
       },
       "id": 124,
       "panels": [],
@@ -1104,7 +1104,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 25
+        "y": 26
       },
       "id": 136,
       "options": {
@@ -1225,7 +1225,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 25
+        "y": 26
       },
       "id": 123,
       "options": {
@@ -1285,7 +1285,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 25
+        "y": 26
       },
       "id": 102,
       "options": {
@@ -1339,7 +1339,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 25
+        "y": 26
       },
       "id": 103,
       "options": {
@@ -1417,9 +1417,9 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 29
+        "y": 30
       },
-      "id": 135,
+      "id": 146,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
@@ -1477,7 +1477,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 29
+        "y": 30
       },
       "id": 105,
       "options": {
@@ -1531,7 +1531,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 29
+        "y": 30
       },
       "id": 106,
       "options": {
@@ -1583,5 +1583,5 @@
   "timezone": "browser",
   "title": "Container Status & Resource Usage",
   "uid": "services-overview",
-  "version": 2
+  "version": 1
 }

@@ -3,7 +3,7 @@ volumes:
   grafana-storage:
 
 services:
-  frontend:
+  client:
     image: ghcr.io/aet-devops25/frontend:latest
     build:
       context: ./client
@@ -15,12 +15,12 @@ services:
     ports:
       - "80:80"
 
-  backend:
+  server:
     image: ghcr.io/aet-devops25/backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: "backend"
+    container_name: "server"
     restart: always
     environment:
       SPRING_DATASOURCE_URL: jdbc:mariadb://database:3306/backend_db
