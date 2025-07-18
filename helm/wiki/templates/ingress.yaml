@@ -2,20 +2,35 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: "{{ .Release.Name }}-ingress"
+  name: "{{ .Release.Name }}-api-ingress"        # Changed from -ingress to -api-ingress
   {{- $annotations := .Values.ingress.annotations | default dict }}
-  {{- if $annotations }}
   annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
     {{- toYaml $annotations | nindent 4 }}
-  {{- end }}
 spec:
   {{- if .Values.ingress.tls }}
   tls:
     - hosts:
         - "{{ .Values.ingress.host }}"
-        - "phpmyadmin.{{ .Values.ingress.host }}"
       secretName: "{{ .Release.Name }}-tls"
   {{- end }}
+  rules:
+    - host: "{{ .Values.ingress.host }}"
+      http:
+        paths:
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: server
+                port:
+                  number: 1111
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "{{ .Release.Name }}-frontend-ingress"   # Changed from -wiki-ingress to -frontend-ingress
+spec:
   rules:
     - host: "{{ .Values.ingress.host }}"
       http:
@@ -24,7 +39,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: frontend
+                name: client
                 port:
                   number: 80
           - path: /grafana
@@ -34,15 +49,4 @@ spec:
                 name: grafana
                 port:
                   number: 3000
-          
-    - host: "phpmyadmin.{{ .Values.ingress.host }}"
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: phpmyadmin
-                port:
-                  number: 80
 {{- end }}

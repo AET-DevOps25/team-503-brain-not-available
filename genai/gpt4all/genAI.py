@@ -93,6 +93,10 @@ async def set_backend(mode: str = Body(..., embed=True)):
     AI_BACKEND["mode"] = mode
     return {"status": f"AI backend set to {mode}"}
 
+@app.get("/get_backend")
+async def get_backend():
+    return {"mode": AI_BACKEND["mode"]}
+
 @app.post("/chat")
 async def chat(request: ChatRequest):
     context = get_context_from_weaviate(request.prompt)
