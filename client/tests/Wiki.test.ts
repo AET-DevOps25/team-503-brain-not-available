@@ -1,5 +1,8 @@
 vi.mock('../src/components/ui/sidebar/utils', async () => {
-  const actual = await vi.importActual<any>('../src/components/ui/sidebar/utils')
+  const actual = await vi.importActual<typeof import('../src/components/ui/sidebar/utils')>(
+    '../src/components/ui/sidebar/utils'
+  )
+
   return {
     ...actual,
     useSidebar: () => ({
@@ -26,6 +29,7 @@ import { pageService } from '../src/service/pageService'
 import Button from '../src/components/ui/button/Button.vue'
 import * as SidebarUI from '../src/components/ui/sidebar'
 import * as DropdownMenu from '../src/components/ui/dropdown-menu'
+import type { Page } from '../src/service/pageService'
 
 // Use a wrapper to provide Sidebar context
 const TestWrapper = {
@@ -50,7 +54,10 @@ function mountComponent() {
   })
 }
 
-const mockPages = [
+
+const mockedPageService = vi.mocked(pageService)
+
+const mockPages: Page[] = [
   { pageId: 1, title: 'Home' },
   { pageId: 2, title: 'About' },
 ]
@@ -63,7 +70,7 @@ describe('AppSidebar', () => {
   })
 
   it('loads pages on mount', async () => {
-    (pageService.getAllPages as any).mockResolvedValue(mockPages)
+    mockedPageService.getAllPages.mockResolvedValue(mockPages)
 
     const wrapper = mountComponent()
     await flushPromises()
@@ -74,9 +81,10 @@ describe('AppSidebar', () => {
   })
 
   it('creates a new page when prompt is accepted', async () => {
-    (pageService.getAllPages as any).mockResolvedValue([])
-    ;(pageService.createPage as any).mockResolvedValue({ pageId: 3, title: 'New Page' })
-    ;(global.prompt as any).mockReturnValue('New Page')
+    mockedPageService.getAllPages.mockResolvedValue([])
+    ;mockedPageService.createPage.mockResolvedValue({ pageId: 3, title: 'New Page', content: 'Content of page'})
+    ;vi.stubGlobal('prompt', vi.fn())
+    vi.mocked(global.prompt).mockReturnValue('New Page')
 
     const wrapper = mountComponent()
     await flushPromises()
@@ -90,9 +98,10 @@ describe('AppSidebar', () => {
   })
 
   it('deletes a page when confirmed', async () => {
-    (pageService.getAllPages as any).mockResolvedValue(mockPages)
-    ;(pageService.deletePage as any).mockResolvedValue()
-    ;(global.confirm as any).mockReturnValue(true)
+    mockedPageService.getAllPages.mockResolvedValue(mockPages)
+    ;mockedPageService.deletePage.mockResolvedValue()
+    ;vi.stubGlobal('confirm', vi.fn())
+    vi.mocked(global.confirm).mockReturnValue(true)
 
     const wrapper = mountComponent()
     await flushPromises()
@@ -121,8 +130,9 @@ describe('AppSidebar', () => {
   })
 
   it('does not create a page if prompt is empty', async () => {
-    (pageService.getAllPages as any).mockResolvedValue([])
-    ;(global.prompt as any).mockReturnValue('   ')
+    mockedPageService.getAllPages.mockResolvedValue([])
+    ;vi.stubGlobal('prompt', vi.fn())
+    vi.mocked(global.prompt).mockReturnValue('   ')
 
     const wrapper = mountComponent()
     await flushPromises()
