@@ -17,6 +17,11 @@ public class WebConfig implements WebMvcConfigurer {
             .allowedOrigins(allowedOrigins)
             .allowedMethods("*")
             .allowedHeaders("*")
-            .allowCredentials(true);
+            .allowCredentials(false);
+    }
+
+    @PostConstruct
+    public void logOrigins() {
+        System.out.println("🔍 ALLOWED ORIGINS: " + Arrays.toString(allowedOrigins));
     }
 }
