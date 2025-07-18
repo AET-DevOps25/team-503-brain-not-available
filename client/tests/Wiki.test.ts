@@ -1,10 +1,15 @@
-import { describe, it, vi, beforeEach, expect } from 'vitest'
-import { mount, flushPromises } from '@vue/test-utils'
-import AppSidebar from '../src/components/AppSidebar.vue'
-import * as SidebarUI from '../src/components/ui/sidebar'
-import * as DropdownMenu from '../src/components/ui/dropdown-menu'
-import Button from '../src/components/ui/button/Button.vue'
-import { pageService } from '../src/service/pageService'
+vi.mock('../src/components/ui/sidebar/utils', async () => {
+  const actual = await vi.importActual<any>('../src/components/ui/sidebar/utils')
+  return {
+    ...actual,
+    useSidebar: () => ({
+      isMobile: false,
+      state: 'open',
+      openMobile: false,
+      setOpenMobile: vi.fn()
+    })
+  }
+})
 
 vi.mock('@/service/pageService', () => ({
   pageService: {
@@ -14,19 +19,27 @@ vi.mock('@/service/pageService', () => ({
   }
 }))
 
-// Mock data
-const mockPages = [
-  { pageId: 1, title: 'Home' },
-  { pageId: 2, title: 'About' },
-]
+import { describe, it, vi, beforeEach, expect } from 'vitest'
+import { mount, flushPromises } from '@vue/test-utils'
+import AppSidebar from '../src/components/AppSidebar.vue'
+import { pageService } from '../src/service/pageService'
+import Button from '../src/components/ui/button/Button.vue'
+import * as SidebarUI from '../src/components/ui/sidebar'
+import * as DropdownMenu from '../src/components/ui/dropdown-menu'
+
+// Use a wrapper to provide Sidebar context
+const TestWrapper = {
+  components: { AppSidebar, Sidebar: SidebarUI.Sidebar },
+  template: `<Sidebar><AppSidebar /></Sidebar>`
+}
 
 function mountComponent() {
-  return mount(AppSidebar, {
+  return mount(TestWrapper, {
     global: {
       components: {
         Button,
         ...SidebarUI,
-        ...DropdownMenu,
+        ...DropdownMenu
       },
       stubs: {
         'router-link': {
@@ -36,6 +49,11 @@ function mountComponent() {
     }
   })
 }
+
+const mockPages = [
+  { pageId: 1, title: 'Home' },
+  { pageId: 2, title: 'About' },
+]
 
 describe('AppSidebar', () => {
   beforeEach(() => {
@@ -47,7 +65,7 @@ describe('AppSidebar', () => {
   it('loads pages on mount', async () => {
     (pageService.getAllPages as any).mockResolvedValue(mockPages)
 
-    const wrapper = mount(AppSidebar)
+    const wrapper = mountComponent()
     await flushPromises()
 
     expect(pageService.getAllPages).toHaveBeenCalled()
@@ -60,7 +78,7 @@ describe('AppSidebar', () => {
     ;(pageService.createPage as any).mockResolvedValue({ pageId: 3, title: 'New Page' })
     ;(global.prompt as any).mockReturnValue('New Page')
 
-    const wrapper = mount(AppSidebar)
+    const wrapper = mountComponent()
     await flushPromises()
 
     const button = wrapper.find('button[title="Neue Seite erstellen"]')
@@ -76,11 +94,11 @@ describe('AppSidebar', () => {
     ;(pageService.deletePage as any).mockResolvedValue()
     ;(global.confirm as any).mockReturnValue(true)
 
-    const wrapper = mount(AppSidebar)
+    const wrapper = mountComponent()
     await flushPromises()
 
     const deleteButtons = wrapper.findAllComponents({ name: 'DropdownMenuItem' })
-    await deleteButtons[0].trigger('click') // Click "Löschen" for first page
+    await deleteButtons[0].trigger('click')
     await flushPromises()
 
     expect(pageService.deletePage).toHaveBeenCalledWith(1)
@@ -89,9 +107,9 @@ describe('AppSidebar', () => {
 
   it('does not create a page if prompt is empty', async () => {
     (pageService.getAllPages as any).mockResolvedValue([])
-    ;(global.prompt as any).mockReturnValue('   ') // spaces only
+    ;(global.prompt as any).mockReturnValue('   ')
 
-    const wrapper = mount(AppSidebar)
+    const wrapper = mountComponent()
     await flushPromises()
 
     const button = wrapper.find('button[title="Neue Seite erstellen"]')
