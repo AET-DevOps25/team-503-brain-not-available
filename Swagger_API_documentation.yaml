@@ -1,0 +1,206 @@
+openapi: 3.0.4
+info:
+  title: Wiki API 1.0
+  description: |-
+    API documentation for the wiki API
+  license:
+    name: MIT license
+    url: https://github.com/AET-DevOps25/team-503-brain-not-available/blob/main/LICENSE
+  version: 1.0.0
+servers:
+  - url: http://localhost/
+tags:
+  - name: page
+    description: Wiki Pages API
+  - name: user
+    description: User API
+paths:
+  /page:              
+    post:
+      tags:
+        - page
+      summary: Add a new page to the wiki.
+      operationId: addPage
+      requestBody:
+        description: Create a new page in the wiki
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/page'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page'
+  /page/{pageId}:
+    get:
+      tags:
+        - page
+      summary: Get an existing wiki page.
+      operationId: getPage
+      parameters:
+        - name: pageId
+          in: path
+          description: ID of wiki page to return
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page'
+    put:
+      tags:
+        - page
+      summary: Update an existing wiki page.
+      operationId: updatePage
+      parameters:
+        - name: pageId
+          in: path
+          description: ID of wiki page to update
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page'
+    delete:
+      tags:
+        - page
+      summary: Delete an existing wiki page.
+      operationId: deletePage
+      parameters:
+        - name: pageId
+          in: path
+          description: ID of wiki page to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/page'
+  /pages:
+    get:
+      tags:
+        - page
+      summary: Get overview of all Wiki pages.
+      operationId: GetPages
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/page'
+              example:
+                - pageId: 1
+                  title: "Page 1"
+                  content: "Welcome to the home page."
+                - pageId: 42
+                  title: "Page 42"
+                  content: "Information about our team."
+
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create user.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /user/{userId}:
+    get:
+      tags:
+        - user
+      summary: Get user by userId.
+      description: Get user detail based on userId.
+      operationId: getUser
+      parameters:
+        - name: userId
+          in: path
+          description: The userId that needs to be fetched.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - user
+      summary: Delete user resource.
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          description: The userId that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User deleted
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: 81024d6b-d51c-4280-8559-aadcb0ebd012
+        name:
+          type: string
+          example: theUser
+        email:
+          type: string
+          example: email@test.com
+        passwordhash:
+          type: string
+          example: a3adsjn4abl68ejal
+      xml:
+        name: user
+    page:
+      type: object
+      properties:
+        pageId:
+          type: integer
+          example: 10
+        title:
+          type: string
+          example: Example Title 
+        content:
+          type: string
+          example: Example content that could be on the Wiki page
+      xml:
+        name: page
