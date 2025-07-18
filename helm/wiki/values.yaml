@@ -77,14 +77,14 @@ client:
   image:
     repository: ghcr.io/aet-devops25/frontend
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
 server:
   replicaCount: 1
   image:
     repository: ghcr.io/aet-devops25/backend
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
 resources: {}
 nodeSelector: {}
