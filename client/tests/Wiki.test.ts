@@ -97,8 +97,23 @@ describe('AppSidebar', () => {
     const wrapper = mountComponent()
     await flushPromises()
 
-    const deleteButtons = wrapper.findAllComponents({ name: 'DropdownMenuItem' })
-    await deleteButtons[0].trigger('click')
+    // 1. find and click the "..." dropdown trigger
+    const dropdownButtons = wrapper.findAll('button')
+    const ellipsisButton = dropdownButtons.find(btn =>
+        btn.attributes('title') === undefined && btn.html().includes('ellipsis')
+    )
+
+    expect(ellipsisButton).toBeDefined()
+    await ellipsisButton!.trigger('click')
+    await flushPromises()
+
+    // 2. find the delete item and click it
+    const deleteItem = wrapper.findAllComponents({ name: 'DropdownMenuItem' }).find(node =>
+        node.text().includes('Löschen')
+    )
+
+    expect(deleteItem).toBeDefined()
+    await deleteItem!.trigger('click')
     await flushPromises()
 
     expect(pageService.deletePage).toHaveBeenCalledWith(1)
