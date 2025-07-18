@@ -1,11 +1,11 @@
-name: Lint with SpotBugs
+name: Lint Backend with SpotBugs
 
 on:
   pull_request:
     branches: [ main ]
 
 jobs:
-  spotbugs:
+  lint:
     runs-on: ubuntu-latest
     defaults:
       run:
