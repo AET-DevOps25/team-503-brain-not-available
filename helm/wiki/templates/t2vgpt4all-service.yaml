@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: t2vgpt4all
+  labels:
+    app: t2vgpt4all
+    chart: {{ include "wiki.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: gpt4all

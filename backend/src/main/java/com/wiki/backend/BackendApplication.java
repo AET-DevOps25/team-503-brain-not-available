@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,17 @@ public class BackendApplication {
 
     @Autowired
     private UserRepository userRepository;
+
+    private static final String GPT4ALL_URL = "http://gpt4all:5000/update_weaviate";
+
+    private void notifyGpt4AllUpdateWeaviate() {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.postForEntity(GPT4ALL_URL, null, String.class);
+        } catch (Exception e) {
+            System.err.println("Failed to notify gpt4all/update_weaviate: " + e.getMessage());
+        }
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
@@ -47,7 +59,9 @@ public class BackendApplication {
 
     @PostMapping("/page")
     public Page createPage(@RequestBody Page page) {
-        return pageRepository.save(page);
+        Page savedPage = pageRepository.save(page);
+        notifyGpt4AllUpdateWeaviate();
+        return savedPage;
     }
 
     @PutMapping("/page/{pageId}")
@@ -56,7 +70,9 @@ public class BackendApplication {
             .map(page -> {
                 page.setTitle(pageDetails.getTitle());
                 page.setContent(pageDetails.getContent());
-                return ResponseEntity.ok(pageRepository.save(page));
+                Page updatedPage = pageRepository.save(page);
+                notifyGpt4AllUpdateWeaviate();
+                return ResponseEntity.ok(updatedPage);
             })
             .orElse(ResponseEntity.notFound().build());
     }

@@ -25,6 +25,13 @@ spec:
                 name: server
                 port:
                   number: 1111
+          - path: /ai(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: gpt4all
+                port:
+                  number: 5000
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
