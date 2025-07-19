@@ -5,11 +5,14 @@ meta {
 }
 
 post {
-  url: /chat?request=test
-  body: none
+  url: http://localhost:5000/chat
+  body: json
   auth: inherit
 }
 
-params:query {
-  request: test
+body:json {
+  {
+    "prompt": "Hello, how can I help you?"
+  }
+  
 }
