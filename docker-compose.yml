@@ -104,9 +104,28 @@ services:
     build:
       context: ./genai/weaviate
       dockerfile: Dockerfile
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8081'
+      - --scheme
+      - http
     ports:
-      - "8080:8080"
+      - "8081:8081"
       - "50051:50051"
+    networks:
+      - app_network
+    environment:
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: 'text2vec-gpt4all'
+      GPT4ALL_INFERENCE_API: http://t2v-gpt4all:8080
+
+  t2v-gpt4all:
+    container_name: "t2v-gpt4all"
+    image: cr.weaviate.io/semitechnologies/gpt4all-inference:all-MiniLM-L6-v2
+    ports:
+      - "8080:8080"  # Host 8082 -> Container 8080
     networks:
       - app_network
 

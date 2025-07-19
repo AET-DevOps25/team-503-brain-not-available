@@ -34,6 +34,12 @@ gpt4all:
     tag: latest
     pullPolicy: Always
 
+t2vgpt4all:
+  image:
+    repository: cr.weaviate.io/semitechnologies/gpt4all-inference
+    tag: all-MiniLM-L6-v2
+    pullPolicy: Always
+
 weaviate:
   image:
     repository: ghcr.io/aet-devops25/weaviate

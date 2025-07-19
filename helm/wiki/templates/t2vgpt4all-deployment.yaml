@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: t2vgpt4all
+  labels:
+    app: t2vgpt4all
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: t2vgpt4all
+  template:
+    metadata:
+      labels:
+        app: t2vgpt4all
+    spec:
+      containers:
+        - name: t2vgpt4all
+          image: {{ .Values.t2vgpt4all.image.repository }}:{{ .Values.t2vgpt4all.image.tag }}
+          imagePullPolicy: {{ .Values.t2vgpt4all.image.pullPolicy }}
+          ports:
+            - containerPort: 8080

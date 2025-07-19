@@ -5,7 +5,13 @@ meta {
 }
 
 post {
-  url: /set_backend
-  body: none
+  url: http://0.0.0.0:5000/set_backend
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+    "mode": "cloud"
+  }
 }
