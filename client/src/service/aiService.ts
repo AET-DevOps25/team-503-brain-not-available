@@ -5,10 +5,8 @@ const api = axios.create({
 })
 
 export const aiService = {
-    async sendAiChat(prompt: string) {
-        const response = await api.post<string>('/chat', { "prompt": prompt }, {
-            params: { request: 'test' }
-        })
+    async sendAiChat(prompt: string, pageId: number) {
+        const response = await api.post<string>('/chat', { "prompt": prompt, "pageId": pageId })
         return response.data
     }
 }
