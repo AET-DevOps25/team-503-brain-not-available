@@ -1,5 +1,6 @@
 from gpt4all import GPT4All
 from fastapi import Body, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
@@ -18,6 +19,14 @@ OLLAMA_MODEL = "llama3.3:latest"
 
 app = FastAPI()
 Instrumentator().instrument(app).expose(app)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 model = None
 

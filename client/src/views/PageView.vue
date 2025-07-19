@@ -60,10 +60,11 @@ async function savePage() {
 }
 
 async function aiSummarize() {
-  await aiService.sendAiChat("Schreibe eine Zusammenfassung der Seite: " + page.value?.content)
+  await aiService.sendAiChat("Schreibe eine Zusammenfassung der Seite: " + page.value?.content, page.value?.pageId)
     .then((response) => {
       if (editedPage.value) {
-        editedPage.value.content = response.data.answer
+        editedPage.value.content = response.response
+        //console.log(response)
       }
     })
     .catch((error) => {
