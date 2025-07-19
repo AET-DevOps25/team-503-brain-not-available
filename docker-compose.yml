@@ -95,6 +95,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gpt4all.rule=PathPrefix(`/ai`)"
+      - "traefik.http.routers.gpt4all.entrypoints=web"
+      - "traefik.http.services.gpt4all.loadbalancer.server.port=5000"
+      - "traefik.http.middlewares.strip-ai-path.stripprefix.prefixes=/ai"
+      - "traefik.http.routers.gpt4all.middlewares=strip-ai-path@docker"
     networks:
       - app_network
 
