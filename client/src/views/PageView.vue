@@ -19,6 +19,7 @@ import {
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { pageService, type Page } from '@/service/pageService'
+import { aiService } from '@/service/aiService'
 
 const route = useRoute()
 const page = ref<Page | null>(null)
@@ -57,6 +58,19 @@ async function savePage() {
     isEditing.value = false
   }
 }
+
+async function aiSummarize() {
+  await aiService.sendAiChat("Schreibe eine Zusammenfassung der Seite: " + page.value?.content, page.value?.pageId)
+    .then((response) => {
+      if (editedPage.value) {
+        editedPage.value.content = response.response
+        //console.log(response)
+      }
+    })
+    .catch((error) => {
+      console.error('AI Zusammenfassung fehlgeschlagen:', error)
+    })
+}
 </script>
 
 <template>
@@ -91,12 +105,13 @@ async function savePage() {
                   class="text-2xl font-bold border p-2 w-full"
                 />
 
+                <Button v-if="isEditing" @click="aiSummarize()" class="ml-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">AI Zusammenfassen</Button>
                 <Button
                   @click="isEditing ? savePage() : enableEdit()"
                   class="ml-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
                   {{ isEditing ? 'Speichern' : 'Bearbeiten' }}
-              </Button>
+                </Button>
               </div>
 
               <div v-if="!isEditing">

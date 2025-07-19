@@ -1,9 +1,6 @@
 package com.wiki.backend;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Page {
@@ -11,6 +8,8 @@ public class Page {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pageId;
     private String title;
+    @Lob
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     // Getters and setters
