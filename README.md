@@ -98,7 +98,6 @@ helm upgrade --install wiki ./helm/wiki --namespace wiki --create-namespace --re
 
 - **Wiki Frontend:** https://wiki-devops25.student.k8s.aet.cit.tum.de/
 - **Grafana:** https://wiki-devops25.student.k8s.aet.cit.tum.de/grafana
-- **phpMyAdmin:** https://phpmyadmin.wiki-devops25.student.k8s.aet.cit.tum.de/
 
 ---
 
