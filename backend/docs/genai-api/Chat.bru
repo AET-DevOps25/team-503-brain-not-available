@@ -5,11 +5,13 @@ meta {
 }
 
 post {
-  url: /chat?request=test
-  body: none
+  url: http://0.0.0.0:5000/chat
+  body: json
   auth: inherit
 }
 
-params:query {
-  request: test
+body:json {
+  {
+    "prompt": "What is this whole project about?", "page_id": 1
+  }
 }
