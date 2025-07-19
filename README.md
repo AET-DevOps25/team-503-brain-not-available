@@ -150,6 +150,15 @@ helm upgrade --install wiki ./helm/wiki --namespace wiki --create-namespace --re
 
 ---
 
+## Responsibilities
+
+- client (Manuel)
+- backend (Felix)
+- genai (Andreas)
+- monitoring (Andreas)
+
+---
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for
