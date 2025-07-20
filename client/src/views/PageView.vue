@@ -87,7 +87,7 @@ async function aiSummarize() {
 }
 
 async function aiQuestion() {
-  await aiService.sendAiChat("Ich habe eine Frage: " + aiQuestionInput + ", das ist der Inhalt der Seite: " + page.value?.content, page.value?.pageId)
+  await aiService.sendAiChat("Ich habe eine Frage: " + aiQuestionInput.value + ", das ist der Inhalt der Seite: " + page.value?.content, page.value?.pageId)
     .then((response) => {
       if (editedPage.value) {
         aiAnswer.value = response.response
@@ -160,7 +160,7 @@ async function aiQuestion() {
         </div>
       </div>
       <Drawer>
-        <DrawerTrigger>> Frage die KI etwas <</DrawerTrigger>
+        <DrawerTrigger>Frage die KI etwas...</DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>Steller der KI eine Frage über diese Seite:</DrawerTitle>
