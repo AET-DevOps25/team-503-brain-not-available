@@ -37,6 +37,7 @@ const page = ref<Page | null>(null)
 
 const aiAnswer = ref('')
 const aiQuestionInput = ref('')
+const isThinking = ref(false)
 
 async function loadPage(id: number) {
   page.value = await pageService.getPage(id)
@@ -87,14 +88,17 @@ async function aiSummarize() {
 }
 
 async function aiQuestion() {
+  isThinking.value = true
   await aiService.sendAiChat("Ich habe eine Frage: " + aiQuestionInput.value + ", das ist der Inhalt der Seite: " + page.value?.content, page.value?.pageId)
     .then((response) => {
         aiAnswer.value = response.response
         console.log(response)
+        isThinking.value = false
     })
     .catch((error) => {
       aiAnswer.value = "Fehler bei der Anfrage..."
       console.error('AI Frage stellen fehlgeschlagen fehlgeschlagen:', error)
+      isThinking.value = false
     })
 }
 </script>
@@ -164,7 +168,7 @@ async function aiQuestion() {
             <DrawerTitle>Stelle der KI eine Frage über diese Seite:</DrawerTitle>
             <div class="flex items-center gap-2">
               <Input v-model="aiQuestionInput" />
-              <Button @click="aiQuestion">Senden</Button>
+              <Button @click="aiQuestion" :disabled="isThinking">{{ isThinking ?  'Bearbeiten...' : 'Senden'}}</Button>
             </div>
           </DrawerHeader>
           <DrawerFooter>
