@@ -89,10 +89,8 @@ async function aiSummarize() {
 async function aiQuestion() {
   await aiService.sendAiChat("Ich habe eine Frage: " + aiQuestionInput.value + ", das ist der Inhalt der Seite: " + page.value?.content, page.value?.pageId)
     .then((response) => {
-      if (editedPage.value) {
         aiAnswer.value = response.response
-        //console.log(response)
-      }
+        console.log(response)
     })
     .catch((error) => {
       aiAnswer.value = "Fehler bei der Anfrage..."
