@@ -14,8 +14,10 @@ tags:
     description: Wiki Pages API
   - name: user
     description: User API
+  - name: genai
+    description: API for the generative AI
 paths:
-  /page:              
+  /api/page:              
     post:
       tags:
         - page
@@ -35,7 +37,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/page'
-  /page/{pageId}:
+  /api/page/{pageId}:
     get:
       tags:
         - page
@@ -93,7 +95,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/page'
-  /pages:
+  /api/pages:
     get:
       tags:
         - page
@@ -116,7 +118,7 @@ paths:
                   title: "Page 42"
                   content: "Information about our team."
 
-  /user:
+  /api/user:
     post:
       tags:
         - user
@@ -135,7 +137,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /user/{userId}:
+  /api/user/{userId}:
     get:
       tags:
         - user
@@ -171,6 +173,105 @@ paths:
       responses:
         '200':
           description: User deleted
+          
+  /ai/get_backend:
+    get:
+      tags:
+        - genai
+      summary: Get current backend configuration
+      description: For the AI, either a self hosted AI or a cloud AI can be used
+      operationId: get_backend
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mode:
+                    type: string
+                    example: cloud
+  /ai/set_backend:
+    post:
+      tags:
+        - genai
+      summary: Get current backend configuration
+      description: For the AI, either a self hosted AI or a cloud AI can be used. Options are either cloud or local
+      operationId: set_backend
+      requestBody:
+        description: AI mode (cloud / local) to use
+        content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mode:
+                    type: string
+                    example: cloud
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: AI backend set to cloud
+  /ai/update_weaviate:
+    post:
+      tags:
+        - genai
+      summary: Update Weaviate vector database
+      description: Makes the genai pull the latest page data from the database to update the Weaviate vector database 
+      operationId: update_weaviate
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: Weaviate updated with wiki pages  
+  /ai/chat:
+    post:
+      tags:
+        - genai
+      summary: Send a prompt to the AI
+      operationId: chat
+      requestBody:
+        description: AI prompt
+        content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prompt:
+                    type: string
+                    example: Please summarize the content of this page
+                  page_id:
+                    type: integer
+                    example: 1
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    example: This page contaisn information about...
+                  page_id:
+                    type: integer
+                    example: 1
+                    
 components:
   schemas:
     User:
