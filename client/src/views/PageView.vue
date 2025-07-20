@@ -15,6 +15,17 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer'
+import { Input } from '@/components/ui/input'
 
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -23,6 +34,9 @@ import { aiService } from '@/service/aiService'
 
 const route = useRoute()
 const page = ref<Page | null>(null)
+
+const aiAnswer = ref('')
+const aiQuestionInput = ref('')
 
 async function loadPage(id: number) {
   page.value = await pageService.getPage(id)
@@ -69,6 +83,20 @@ async function aiSummarize() {
     })
     .catch((error) => {
       console.error('AI Zusammenfassung fehlgeschlagen:', error)
+    })
+}
+
+async function aiQuestion() {
+  await aiService.sendAiChat("Ich habe eine Frage: " + aiQuestionInput + ", das ist der Inhalt der Seite: " + page.value?.content, page.value?.pageId)
+    .then((response) => {
+      if (editedPage.value) {
+        aiAnswer.value = response.response
+        //console.log(response)
+      }
+    })
+    .catch((error) => {
+      aiAnswer.value = "Fehler bei der Anfrage..."
+      console.error('AI Frage stellen fehlgeschlagen fehlgeschlagen:', error)
     })
 }
 </script>
@@ -131,6 +159,23 @@ async function aiSummarize() {
           </div>
         </div>
       </div>
+      <Drawer>
+        <DrawerTrigger>> Frage die KI etwas <</DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Steller der KI eine Frage über diese Seite:</DrawerTitle>
+            <div class="flex items-center gap-2">
+              <Input v-model="aiQuestionInput" />
+              <Button @click="aiQuestion">Senden</Button>
+            </div>
+          </DrawerHeader>
+          <DrawerFooter>
+            <div class="w-full min-h-[4rem] border rounded p-2 bg-gray-50" v-if="aiAnswer">
+              {{ aiAnswer || '' }}
+            </div>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </SidebarInset>
   </SidebarProvider>
 </template>
