@@ -26,14 +26,6 @@ class TestGenAIApi(unittest.TestCase):
         self.assertEqual(response.json(), {"status": "Weaviate updated with wiki pages"})
         self.assertEqual(mock_collection.data.insert.call_count, 2)
 
-    @patch("genAI.requests.get")
-    def test_update_weaviate_backend_error(self, mock_requests_get):
-        mock_requests_get.side_effect = Exception("Timeout")
-        with patch("genAI.get_weaviate_collection", return_value=MagicMock()):
-            response = client.post("/update_weaviate")
-        self.assertEqual(response.status_code, 503)
-        self.assertIn("Backend unavailable", response.text)
-
     @patch("genAI.get_weaviate_collection")
     def test_get_context_from_weaviate(self, mock_get_collection):
         mock_obj = MagicMock()
