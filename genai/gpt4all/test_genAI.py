@@ -1,71 +1,101 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
-from genai.gpt4all.genAI import app, get_context_from_weaviate
+from genAI import app, get_context_from_weaviate, get_page_content, AI_BACKEND
 
+client = TestClient(app)
 
-class TestGenAI(unittest.TestCase):
-    def setUp(self):
-        self.client = TestClient(app)
+class TestGenAIApi(unittest.TestCase):
+    
+    @patch("genAI.requests.get")
+    @patch("genAI.get_weaviate_collection")
+    def test_update_weaviate_success(self, mock_get_collection, mock_requests_get):
+        mock_collection = MagicMock()
+        mock_get_collection.return_value = mock_collection
 
-    @patch("genai.gpt4all.genAI.weaviate_client")
-    @patch("genai.gpt4all.genAI.requests")
-    def test_update_weaviate(self, mock_requests, mock_weaviate_client):
-        # Mock backend response
-        mock_resp = MagicMock()
-        mock_resp.json.return_value = [
-            {"title": "T1", "content": "C1", "pageId": 1},
-            {"title": "T2", "content": "C2", "pageId": 2}
-        ]
-        mock_resp.raise_for_status.return_value = None
-        mock_requests.get.return_value = mock_resp
+        mock_requests_get.return_value = MagicMock(
+            status_code=200,
+            json=lambda: [
+                {"title": "T1", "content": "C1", "pageId": 1},
+                {"title": "T2", "content": "C2", "pageId": 2}
+            ]
+        )
 
-        # Mock data_object.create
-        mock_weaviate_client.data_object.create = MagicMock()
-
-        response = self.client.post("/update_weaviate")
+        response = client.post("/update_weaviate")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"status": "Weaviate updated with wiki pages"})
-        self.assertEqual(mock_weaviate_client.data_object.create.call_count, 2)
-        mock_weaviate_client.data_object.create.assert_any_call(
-            {"title": "T1", "content": "C1", "page_id": 1}, class_name="WikiPage"
+        self.assertEqual(mock_collection.data.insert.call_count, 2)
+
+    @patch("genAI.requests.get")
+    def test_update_weaviate_backend_error(self, mock_requests_get):
+        mock_requests_get.side_effect = Exception("Timeout")
+        with patch("genAI.get_weaviate_collection", return_value=MagicMock()):
+            response = client.post("/update_weaviate")
+        self.assertEqual(response.status_code, 503)
+        self.assertIn("Backend unavailable", response.text)
+
+    @patch("genAI.get_weaviate_collection")
+    def test_get_context_from_weaviate(self, mock_get_collection):
+        mock_obj = MagicMock()
+        mock_obj.properties = {"title": "Test", "content": "Sample", "pageId": 42}
+        mock_get_collection.return_value.query.near_text.return_value.objects = [mock_obj]
+
+        context = get_context_from_weaviate("sample query")
+        self.assertEqual(len(context), 1)
+        self.assertEqual(context[0]["pageId"], 42)
+
+    @patch("genAI.requests.get")
+    def test_get_page_content_success(self, mock_requests_get):
+        mock_requests_get.return_value = MagicMock(
+            status_code=200,
+            json=lambda: {"title": "Intro", "content": "Content here"}
         )
-        mock_weaviate_client.data_object.create.assert_any_call(
-            {"title": "T2", "content": "C2", "page_id": 2}, class_name="WikiPage"
-        )
+        result = get_page_content(1)
+        self.assertIn("Intro", result)
+        self.assertIn("Content here", result)
 
-    @patch("genai.gpt4all.genAI.weaviate_client")
-    def test_get_context_from_weaviate(self, mock_weaviate_client):
-        # Mock the chained query
-        mock_do = MagicMock(return_value={
-            "data": {
-                "Get": {
-                    "WikiPage": [
-                        {"title": "T1", "content": "C1"},
-                        {"title": "T2", "content": "C2"}
-                    ]
-                }
-            }
-        })
-        mock_query = MagicMock()
-        mock_query.get.return_value.with_near_text.return_value.with_limit.return_value.do = mock_do
-        mock_weaviate_client.query = mock_query
+    @patch("genAI.requests.get")
+    def test_get_page_content_failure(self, mock_requests_get):
+        mock_requests_get.return_value.status_code = 404
+        result = get_page_content(999)
+        self.assertEqual(result, "")
 
-        context = get_context_from_weaviate("test")
-        self.assertIn("T1: C1", context)
-        self.assertIn("T2: C2", context)
-
-    @patch("genai.gpt4all.genAI.model")
-    @patch("genai.gpt4all.genAI.get_context_from_weaviate")
-    def test_chat_endpoint(self, mock_get_context, mock_model):
-        mock_get_context.return_value = "T1: C1\n"
-        mock_session = MagicMock()
-        mock_model.chat_session.return_value.__enter__.return_value = mock_session
-        mock_model.generate.return_value = "Fake response"
-
-        response = self.client.post("/chat", json={"prompt": "Hello"})
+    def test_set_backend_valid_mode(self):
+        response = client.post("/set_backend", json={"mode": "cloud"})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"response": "Fake response"})
+        self.assertEqual(response.json()["status"], "AI backend set to cloud")
+        self.assertEqual(AI_BACKEND["mode"], "cloud")
+
+    def test_set_backend_invalid_mode(self):
+        response = client.post("/set_backend", json={"mode": "invalid"})
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Invalid mode", response.text)
+
+    def test_get_backend(self):
+        AI_BACKEND["mode"] = "cloud"
+        response = client.get("/get_backend")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"mode": "cloud"})
+
+    @patch("genAI.get_page_content")
+    @patch("genAI.get_context_from_weaviate")
+    @patch("genAI.requests.post")
+    def test_chat_cloud_mode(self, mock_post, mock_get_context, mock_get_page_content):
+        AI_BACKEND["mode"] = "cloud"
+
+        mock_get_context.return_value = [{"title": "T", "content": "C", "pageId": 1}]
+        mock_get_page_content.return_value = "Page Content"
+
+        mock_post.return_value = MagicMock(
+            status_code=200,
+            json=lambda: {
+                "choices": [{"message": {"content": "AI response"}}]
+            }
+        )
+
+        response = client.post("/chat", json={"prompt": "Hello", "page_id": 1})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("AI response", response.text)
 
 if __name__ == "__main__":
     unittest.main()
