@@ -158,10 +158,10 @@ async function aiQuestion() {
         </div>
       </div>
       <Drawer>
-        <DrawerTrigger>Frage die KI etwas...</DrawerTrigger>
+        <DrawerTrigger><Button class="ml-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Frage die KI etwas...</Button></DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle>Steller der KI eine Frage über diese Seite:</DrawerTitle>
+            <DrawerTitle>Stelle der KI eine Frage über diese Seite:</DrawerTitle>
             <div class="flex items-center gap-2">
               <Input v-model="aiQuestionInput" />
               <Button @click="aiQuestion">Senden</Button>
