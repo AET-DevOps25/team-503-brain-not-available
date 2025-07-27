@@ -39,7 +39,7 @@ const loginAccount = async () => {
     </CardHeader>
     <CardContent class="grid gap-4">
       <div class="grid gap-2">
-        <Label for="email">Email</Label>
+        <Label for="email">E-Mail</Label>
         <Input id="email" type="email" placeholder="john.doe@tum.com" v-model="email" required />
       </div>
       <div class="grid gap-2">
